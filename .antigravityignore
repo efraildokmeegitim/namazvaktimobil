@@ -1,0 +1,25 @@
+# Derleme ve IDE Çıktıları
+build/
+.dart_tool/
+.idea/
+.vscode/
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/ephemeral/
+android/.gradle/
+android/app/build/
+
+# Otomatik Üretilen Kodlar
+**/*.g.dart
+**/*.freezed.dart
+**/*.drift.dart
+**/*.gr.dart
+pubspec.lock
+ios/Podfile.lock
+
+# Büyük Medya, Font ve Ham Veri Paketleri
+assets/audio/**
+assets/fonts/**
+assets/seed_data/*.json
+assets/seed_data/*.db
+assets/seed_data/*.sqlite
