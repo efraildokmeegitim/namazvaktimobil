@@ -133,3 +133,79 @@ class SukunWidgetMediumProvider : AppWidgetProvider() {
         }
     }
 }
+
+class SukunWidgetTasbihProvider : AppWidgetProvider() {
+
+    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+        for (id in appWidgetIds) {
+            updateTasbihWidget(context, appWidgetManager, id)
+        }
+    }
+
+    override fun onReceive(context: Context, intent: Intent) {
+        super.onReceive(context, intent)
+        val prefs = context.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
+
+        when (intent.action) {
+            ACTION_INCREMENT -> {
+                val current = prefs.getInt(PREF_KEY_COUNT, 0)
+                val newCount = current + 1
+                prefs.edit().putInt(PREF_KEY_COUNT, newCount).apply()
+                updateAllTasbihWidgets(context)
+            }
+            ACTION_RESET -> {
+                prefs.edit().putInt(PREF_KEY_COUNT, 0).apply()
+                updateAllTasbihWidgets(context)
+            }
+        }
+    }
+
+    companion object {
+        const val ACTION_INCREMENT = "com.sukun.app.ACTION_TASBIH_INCREMENT"
+        const val ACTION_RESET = "com.sukun.app.ACTION_TASBIH_RESET"
+        private const val PREF_KEY_COUNT = "flutter.tasbih_widget_count"
+        private const val PREF_KEY_NAME = "flutter.tasbih_widget_dhikr_name"
+
+        fun updateTasbihWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+            val prefs = context.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
+            val count = prefs.getInt(PREF_KEY_COUNT, 0)
+            val dhikrName = prefs.getString(PREF_KEY_NAME, "Sübhânallâhi ve bi-hamdihî") ?: "Sübhânallâhi ve bi-hamdihî"
+
+            val views = RemoteViews(context.packageName, R.layout.sukun_widget_tasbih_layout).apply {
+                setTextViewText(R.id.widget_tasbih_counter, count.toString())
+                setTextViewText(R.id.widget_tasbih_dhikr_name, dhikrName)
+
+                // Tap on Center Area -> Increment
+                val incIntent = Intent(context, SukunWidgetTasbihProvider::class.java).apply {
+                    action = ACTION_INCREMENT
+                }
+                val incPending = PendingIntent.getBroadcast(
+                    context, 201, incIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+                )
+                setOnClickPendingIntent(R.id.widget_tasbih_btn_tap, incPending)
+
+                // Tap on Corner Reset Button -> Reset
+                val resetIntent = Intent(context, SukunWidgetTasbihProvider::class.java).apply {
+                    action = ACTION_RESET
+                }
+                val resetPending = PendingIntent.getBroadcast(
+                    context, 202, resetIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+                )
+                setOnClickPendingIntent(R.id.widget_tasbih_btn_reset, resetPending)
+            }
+
+            appWidgetManager.updateAppWidget(appWidgetId, views)
+        }
+
+        fun updateAllTasbihWidgets(context: Context) {
+            val appWidgetManager = AppWidgetManager.getInstance(context)
+            val ids = appWidgetManager.getAppWidgetIds(ComponentName(context, SukunWidgetTasbihProvider::class.java))
+            for (id in ids) {
+                updateTasbihWidget(context, appWidgetManager, id)
+            }
+        }
+    }
+}
+

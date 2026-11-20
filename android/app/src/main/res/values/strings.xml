@@ -5,4 +5,7 @@
     <string name="widget_small_desc">Sıradaki namaz vaktini ve kalan süreyi dairesel sayaç ile gösterir.</string>
     <string name="widget_medium_name">SÜKÛN 6 Vakit Tablosu (4x2)</string>
     <string name="widget_medium_desc">Günün 6 namaz vaktini, aktif vakit vurgusuyla ana ekranınızda listeler.</string>
+    <string name="widget_tasbih_name">SÜKÛN Zikirmatik (2x2 / Boyutlandırılabilir)</string>
+    <string name="widget_tasbih_desc">Dokundukça artan, sıfırlama butonlu ve boyutlandırılabilir ana ekran zikirmatiği.</string>
 </resources>
+
