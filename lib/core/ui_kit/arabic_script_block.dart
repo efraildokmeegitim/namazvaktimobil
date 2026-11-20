@@ -9,6 +9,7 @@ class ArabicScriptBlock extends StatelessWidget {
   final bool showTransliteration;
   final bool showTranslation;
   final Color? textColor;
+  final Color? secondaryTextColor;
 
   const ArabicScriptBlock({
     super.key,
@@ -19,13 +20,15 @@ class ArabicScriptBlock extends StatelessWidget {
     this.showTransliteration = true,
     this.showTranslation = true,
     this.textColor,
+    this.secondaryTextColor,
   });
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final primaryTextColor = textColor ?? (isDark ? SukunColors.carbonTextPrimary : SukunColors.nurTextPrimary);
-    final secondaryTextColor = isDark ? SukunColors.carbonTextSecondary : SukunColors.nurTextSecondary;
+    final effectiveSecondaryTextColor = secondaryTextColor ??
+        (textColor != null ? textColor!.withValues(alpha: 0.75) : (isDark ? SukunColors.carbonTextSecondary : SukunColors.nurTextSecondary));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -53,7 +56,7 @@ class ArabicScriptBlock extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               fontStyle: FontStyle.italic,
-              color: secondaryTextColor,
+              color: effectiveSecondaryTextColor,
               height: 1.4,
             ),
           ),

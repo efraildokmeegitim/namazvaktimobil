@@ -10,21 +10,41 @@ enum FeedViewMode {
 
 final feedViewModeProvider = StateProvider<FeedViewMode>((ref) => FeedViewMode.list);
 final selectedFeedCategoryProvider = StateProvider<String>((ref) => 'all');
+final ilmiFeedSearchQueryProvider = StateProvider<String>((ref) => '');
+final ilmiFeedFavoritesOnlyProvider = StateProvider<bool>((ref) => false);
 
 final ilmiFeedStreamProvider = StreamProvider<List<IlmiFeedItem>>((ref) {
   final db = ref.watch(appDatabaseProvider);
   final category = ref.watch(selectedFeedCategoryProvider);
+  final query = ref.watch(ilmiFeedSearchQueryProvider).trim().toLowerCase();
+  final favoritesOnly = ref.watch(ilmiFeedFavoritesOnlyProvider);
 
-  if (category == 'all') {
-    return (db.select(db.ilmiFeedItems)
-          ..orderBy([(t) => OrderingTerm.desc(t.publishedAt)]))
-        .watch();
-  } else {
-    return (db.select(db.ilmiFeedItems)
-          ..where((t) => t.category.equals(category))
-          ..orderBy([(t) => OrderingTerm.desc(t.publishedAt)]))
-        .watch();
-  }
+  return (db.select(db.ilmiFeedItems)
+        ..orderBy([(t) => OrderingTerm.desc(t.publishedAt)]))
+      .watch()
+      .map((items) {
+    return items.where((item) {
+      if (category != 'all' && item.category != category) {
+        return false;
+      }
+      if (favoritesOnly && item.isLiked != 1) {
+        return false;
+      }
+      if (query.isNotEmpty) {
+        final title = (item.title ?? '').toLowerCase();
+        final body = item.summaryBody.toLowerCase();
+        final commentary = (item.detailedCommentary ?? '').toLowerCase();
+        final source = item.sourceReference.toLowerCase();
+        final cat = item.category.toLowerCase();
+        return title.contains(query) ||
+            body.contains(query) ||
+            commentary.contains(query) ||
+            source.contains(query) ||
+            cat.contains(query);
+      }
+      return true;
+    }).toList();
+  });
 });
 
 class IlmiFeedActions {

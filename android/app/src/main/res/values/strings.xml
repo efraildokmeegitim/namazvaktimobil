@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SÜKÛN</string>
+    <string name="widget_small_name">SÜKÛN Vakit Sayacı (2x2)</string>
+    <string name="widget_small_desc">Sıradaki namaz vaktini ve kalan süreyi dairesel sayaç ile gösterir.</string>
+    <string name="widget_medium_name">SÜKÛN 6 Vakit Tablosu (4x2)</string>
+    <string name="widget_medium_desc">Günün 6 namaz vaktini, aktif vakit vurgusuyla ana ekranınızda listeler.</string>
+</resources>

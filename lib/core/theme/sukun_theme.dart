@@ -87,10 +87,11 @@ class SukunTheme {
     );
   }
 
-  // Hayrat Neşriyat Hattı Typography Tokens
-  static const List<String> hayratFontFamilyFallback = [
-    'HayratNesih',
+  // Hafız Osman / Şeyh Hamdullah Diyanet Hattı Typography Tokens
+  static const List<String> hafizOsmanFontFamilyFallback = [
+    'HafizOsman',
     'ScheherazadeNew',
+    'HayratNesih',
     'KFGQPC Uthmanic Script HAFS',
     'Amiri',
     'DejaVu Sans',
@@ -104,8 +105,8 @@ class SukunTheme {
     Color? color,
   }) {
     return TextStyle(
-      fontFamily: 'HayratNesih',
-      fontFamilyFallback: hayratFontFamilyFallback,
+      fontFamily: 'HafizOsman',
+      fontFamilyFallback: hafizOsmanFontFamilyFallback,
       fontSize: fontSize,
       fontWeight: fontWeight,
       height: height,

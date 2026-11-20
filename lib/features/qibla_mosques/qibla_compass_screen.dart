@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/sukun_theme.dart';
 import '../../core/ui_kit/ui_kit.dart';
@@ -13,7 +15,52 @@ class QiblaCompassScreen extends ConsumerStatefulWidget {
 }
 
 class _QiblaCompassScreenState extends ConsumerState<QiblaCompassScreen> {
-  double _deviceHeading = 0.0; // Mock or sensor heading
+  static const EventChannel _compassChannel = EventChannel('com.sukun.app/compass_sensor');
+  StreamSubscription? _compassSubscription;
+  double _deviceHeading = 0.0;
+  bool _wasAligned = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _startListeningCompass();
+  }
+
+  void _startListeningCompass() {
+    try {
+      _compassSubscription = _compassChannel.receiveBroadcastStream().listen(
+        (event) {
+          if (event is double && mounted) {
+            final location = ref.read(userLocationProvider);
+            final qiblaAngle = QiblaCalculator.calculateQiblaAngle(
+              userLat: location.latitude,
+              userLon: location.longitude,
+            );
+            final diff = ((qiblaAngle - event) % 360).abs();
+            final isAligned = diff <= 2.5 || (360 - diff) <= 2.5;
+
+            if (isAligned && !_wasAligned) {
+              HapticFeedback.mediumImpact();
+            }
+            _wasAligned = isAligned;
+
+            setState(() {
+              _deviceHeading = event;
+            });
+          }
+        },
+        onError: (err) {
+          // Cihazda manyetometre yoksa veya masaüstü emülatörde sessizce düşer
+        },
+      );
+    } catch (_) {}
+  }
+
+  @override
+  void dispose() {
+    _compassSubscription?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
 import '../../core/notifications/lock_screen_prayer_notification_service.dart';
 import 'prayer_calculator_service.dart';
 import 'prayer_times_model.dart';
@@ -14,13 +15,15 @@ class CurrentLocationCoordinates {
   final String locationName;
   final double homeLatitude;
   final double homeLongitude;
+  final bool isGpsDetected;
 
   const CurrentLocationCoordinates({
-    this.latitude = 41.0082, // İstanbul Fatih
+    this.latitude = 41.0082, // İstanbul Fatih varsayılan
     this.longitude = 28.9784,
     this.locationName = 'İstanbul, Fatih',
     this.homeLatitude = 41.0082,
     this.homeLongitude = 28.9784,
+    this.isGpsDetected = false,
   });
 
   CurrentLocationCoordinates copyWith({
@@ -29,6 +32,7 @@ class CurrentLocationCoordinates {
     String? locationName,
     double? homeLatitude,
     double? homeLongitude,
+    bool? isGpsDetected,
   }) {
     return CurrentLocationCoordinates(
       latitude: latitude ?? this.latitude,
@@ -36,12 +40,56 @@ class CurrentLocationCoordinates {
       locationName: locationName ?? this.locationName,
       homeLatitude: homeLatitude ?? this.homeLatitude,
       homeLongitude: homeLongitude ?? this.homeLongitude,
+      isGpsDetected: isGpsDetected ?? this.isGpsDetected,
     );
   }
 }
 
-final userLocationProvider = StateProvider<CurrentLocationCoordinates>((ref) {
-  return const CurrentLocationCoordinates();
+class UserLocationNotifier extends StateNotifier<CurrentLocationCoordinates> {
+  UserLocationNotifier() : super(const CurrentLocationCoordinates()) {
+    detectCurrentGpsLocation();
+  }
+
+  Future<void> detectCurrentGpsLocation() async {
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) return;
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) return;
+      }
+      if (permission == LocationPermission.deniedForever) return;
+
+      final pos = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.medium,
+        timeLimit: const Duration(seconds: 10),
+      );
+
+      // Konum adını enleme/boylama göre biçimlendir
+      final locName = 'GPS Konumu (${pos.latitude.toStringAsFixed(2)}, ${pos.longitude.toStringAsFixed(2)})';
+      state = state.copyWith(
+        latitude: pos.latitude,
+        longitude: pos.longitude,
+        locationName: locName,
+        isGpsDetected: true,
+      );
+    } catch (_) {}
+  }
+
+  void setCustomLocation(double lat, double lon, String name) {
+    state = state.copyWith(
+      latitude: lat,
+      longitude: lon,
+      locationName: name,
+      isGpsDetected: false,
+    );
+  }
+}
+
+final userLocationProvider = StateNotifierProvider<UserLocationNotifier, CurrentLocationCoordinates>((ref) {
+  return UserLocationNotifier();
 });
 
 // Otomatik saniyelik güncellenen anlık namaz vakti durumu

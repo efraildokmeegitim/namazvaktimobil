@@ -31,8 +31,8 @@ class CelestialPrayerArc extends StatelessWidget {
     final remaining = prayerTimes.timeRemainingToNext;
 
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-      padding: const EdgeInsets.all(22),
+      margin: const EdgeInsets.fromLTRB(14, 10, 14, 8),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 18),
       decoration: BoxDecoration(
         gradient: const RadialGradient(
           center: Alignment(0, -0.4),
@@ -64,23 +64,30 @@ class CelestialPrayerArc extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(7),
-                    decoration: BoxDecoration(
-                      color: SukunColors.emeraldPrimary.withValues(alpha: 0.2),
-                      shape: BoxShape.circle,
+              Expanded(
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(7),
+                      decoration: BoxDecoration(
+                        color: SukunColors.emeraldPrimary.withValues(alpha: 0.2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.location_on_rounded, size: 14, color: SukunColors.emeraldPrimary),
                     ),
-                    child: const Icon(Icons.location_on_rounded, size: 14, color: SukunColors.emeraldPrimary),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    prayerTimes.locationName,
-                    style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: Colors.white),
-                  ),
-                ],
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        prayerTimes.locationName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                 decoration: BoxDecoration(
@@ -161,51 +168,60 @@ class CelestialPrayerArc extends StatelessWidget {
 
           // 6 Prayer Times Horizontal Strip with Glassmorphism
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
             decoration: BoxDecoration(
               color: Colors.black.withValues(alpha: 0.35),
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(16),
               border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: PrayerType.values.map((type) {
                 final isCurrent = type == current;
                 return Expanded(
                   child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 2),
-                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+                    margin: const EdgeInsets.symmetric(horizontal: 1.5),
+                    padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 5),
                     decoration: BoxDecoration(
                       color: isCurrent ? SukunColors.emeraldPrimary.withValues(alpha: 0.25) : Colors.transparent,
                       borderRadius: BorderRadius.circular(10),
                       border: isCurrent ? Border.all(color: SukunColors.emeraldPrimary, width: 1.2) : null,
                     ),
                     child: Column(
-                    children: [
-                      Text(
-                        type.label,
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: isCurrent ? FontWeight.bold : FontWeight.w500,
-                          color: isCurrent ? SukunColors.emeraldPrimary : Colors.white60,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            type.label,
+                            maxLines: 1,
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: isCurrent ? FontWeight.bold : FontWeight.w500,
+                              color: isCurrent ? SukunColors.emeraldPrimary : Colors.white60,
+                            ),
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        _formatTime(prayerTimes.getTime(type)),
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w800,
-                          fontFeatures: const [FontFeature.tabularFigures()],
-                          color: isCurrent ? SukunColors.goldAccent : Colors.white,
+                        const SizedBox(height: 3),
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            _formatTime(prayerTimes.getTime(type)),
+                            maxLines: 1,
+                            style: TextStyle(
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w800,
+                              fontFeatures: const [FontFeature.tabularFigures()],
+                              color: isCurrent ? SukunColors.goldAccent : Colors.white,
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              );
-            }).toList(),
-          ),
+                );
+              }).toList(),
+            ),
           ),
         ],
       ),

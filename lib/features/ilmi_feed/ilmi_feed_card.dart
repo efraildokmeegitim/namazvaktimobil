@@ -32,7 +32,11 @@ class IlmiFeedCard extends ConsumerWidget {
       case 'kitap_alintisi':
         return 'KİTAP PASAJI';
       case 'tasavvuf':
-        return 'TASAVVUF & AHLÂK';
+        return 'TASAVVUF & KALBÎ HAYAT';
+      case 'nefs_terbiyesi':
+        return 'NEFS TERBİYESİ & TEZKİYE';
+      case 'ahlak_adab':
+        return 'İSLÂM AHLÂKI & ADÂB';
       default:
         return cat.toUpperCase();
     }
@@ -56,6 +60,10 @@ class IlmiFeedCard extends ConsumerWidget {
         return Icons.bookmark_outline_rounded;
       case 'tasavvuf':
         return Icons.favorite_border_rounded;
+      case 'nefs_terbiyesi':
+        return Icons.self_improvement_rounded;
+      case 'ahlak_adab':
+        return Icons.verified_user_outlined;
       default:
         return Icons.auto_stories_rounded;
     }
@@ -316,14 +324,14 @@ class IlmiFeedCard extends ConsumerWidget {
         const Divider(height: 1, color: Colors.white12),
         ContextualActionRow(
           isLiked: item.isLiked == 1,
-          isSaved: false,
+          isSaved: item.isLiked == 1,
           onLike: () => actions.toggleLike(item.id, item.isLiked == 1),
           onSave: () {
-            actions.saveToCollection(item.id, null);
+            actions.toggleLike(item.id, item.isLiked == 1);
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Kart koleksiyonunuza kaydedildi.'),
-                duration: Duration(seconds: 1),
+              SnackBar(
+                content: Text(item.isLiked == 1 ? 'Kart favorilerden çıkarıldı.' : 'Kart ilmi koleksiyonunuza kaydedildi.'),
+                duration: const Duration(seconds: 1),
               ),
             );
           },

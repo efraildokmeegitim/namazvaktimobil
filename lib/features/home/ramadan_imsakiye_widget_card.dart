@@ -22,28 +22,35 @@ class RamadanImsakiyeWidgetCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: SukunColors.emeraldPrimary.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(8),
+              Expanded(
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: SukunColors.emeraldPrimary.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(Icons.star_rounded, size: 14, color: SukunColors.goldAccent),
                     ),
-                    child: const Icon(Icons.star_rounded, size: 14, color: SukunColors.goldAccent),
-                  ),
-                  const SizedBox(width: 8),
-                  const Text(
-                    'İFTAR & SAHUR GERİ SAYIMI',
-                    style: TextStyle(
-                      color: SukunColors.emeraldPrimary,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1.0,
+                    const SizedBox(width: 8),
+                    const Flexible(
+                      child: Text(
+                        'İFTAR & SAHUR GERİ SAYIMI',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: SukunColors.emeraldPrimary,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.8,
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               InkWell(
                 onTap: onOpenCalendar,
                 child: const Text(

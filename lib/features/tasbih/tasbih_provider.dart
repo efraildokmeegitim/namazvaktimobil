@@ -51,31 +51,39 @@ class TasbihNotifier extends StateNotifier<TasbihState> {
 
   TasbihNotifier(this.db) : super(const TasbihState());
 
-  /// Namaz Tesbihatı Zincirleme Modu:
-  /// 33 Sübhanallah -> 33 Elhamdülillah -> 33 Allahu Ekber
+  /// Namaz Tesbihatı Zincirleme Modu (33'lük) veya 99 / 111 / Serbest zikir modu:
   void increment() {
     final nextCount = state.count + 1;
 
-    if (nextCount >= state.targetCount) {
-      if (state.title == 'Sübhânallâh') {
-        state = state.copyWith(
-          title: 'Elhamdülillâh',
-          arabicText: 'الْحَمْدُ لِلَّهِ',
-          count: 0,
-          round: 2,
-        );
-      } else if (state.title == 'Elhamdülillâh') {
-        state = state.copyWith(
-          title: 'Allâhuekber',
-          arabicText: 'اللَّهُ أَكْبَرُ',
-          count: 0,
-          round: 3,
-        );
+    if (state.targetCount > 0 && nextCount >= state.targetCount) {
+      if (state.targetCount == 33) {
+        // 33'lük Zincirleme Namaz Tesbihatı
+        if (state.title == 'Sübhânallâh') {
+          state = state.copyWith(
+            title: 'Elhamdülillâh',
+            arabicText: 'الْحَمْدُ لِلَّهِ',
+            count: 0,
+            round: 2,
+          );
+        } else if (state.title == 'Elhamdülillâh') {
+          state = state.copyWith(
+            title: 'Allâhuekber',
+            arabicText: 'اللَّهُ أَكْبَرُ',
+            count: 0,
+            round: 3,
+          );
+        } else {
+          // Devir tamamlandı
+          state = state.copyWith(
+            title: 'Sübhânallâh',
+            arabicText: 'سُبْحَانَ اللَّهِ',
+            count: 0,
+            round: state.round + 1,
+          );
+        }
       } else {
-        // Devir tamamlandı
+        // 99'luk, 111'lik veya Özel Hedefli Tesbih Tamamlandı
         state = state.copyWith(
-          title: 'Sübhânallâh',
-          arabicText: 'سُبْحَانَ اللَّهِ',
           count: 0,
           round: state.round + 1,
         );
@@ -83,6 +91,20 @@ class TasbihNotifier extends StateNotifier<TasbihState> {
     } else {
       state = state.copyWith(count: nextCount);
     }
+  }
+
+  void setTargetCount(int target) {
+    state = state.copyWith(targetCount: target, count: 0, round: 1);
+  }
+
+  void setZikr({required String title, String? arabicText, int targetCount = 33}) {
+    state = state.copyWith(
+      title: title,
+      arabicText: arabicText,
+      targetCount: targetCount,
+      count: 0,
+      round: 1,
+    );
   }
 
   void reset() {

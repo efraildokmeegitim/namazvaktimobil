@@ -20,6 +20,13 @@ class LockScreenPrayerNotificationService {
     }
   }
 
+  /// Bildirim izni ister (Android 13+ POST_NOTIFICATIONS)
+  static Future<void> requestPermission() async {
+    try {
+      await _channel.invokeMethod('requestNotificationPermission');
+    } catch (_) {}
+  }
+
   /// Aktif vakit verilerini hem Widget köprüsüne hem de Kilit Ekranı servisine gönderir
   static Future<void> updateLockScreen(PrayerDayTimes times) async {
     // 1. SharedPreferences & Native Widget timelines güncelle
@@ -41,6 +48,7 @@ class LockScreenPrayerNotificationService {
         'subtitle': subtitle,
         'details': details,
         'nextPrayerName': next.label,
+        'countdown': remainingStr,
         'remainingSeconds': remaining.inSeconds,
         'fajr': _formatTime(times.fajr),
         'sunrise': _formatTime(times.sunrise),
@@ -50,6 +58,7 @@ class LockScreenPrayerNotificationService {
         'isha': _formatTime(times.isha),
         'location': times.locationName,
         'hijriDate': times.hijriDate,
+        'quote': "Kalpler ancak Allah'ı anmakla sükûnet bulur. (Ra'd, 28)",
         'visibility': 'public', // Kilit ekranında açık gösterim (VISIBILITY_PUBLIC)
         'ongoing': true,        // Kaza ile silinmeyen sabit servis bildirimi
       });

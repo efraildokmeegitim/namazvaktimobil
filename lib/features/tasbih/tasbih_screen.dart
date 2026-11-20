@@ -114,14 +114,46 @@ class TasbihScreen extends ConsumerWidget {
                   ],
                   const SizedBox(height: 12),
                   Text(
-                    'Zincirleme Namaz Tesbihatı (33 Sübhanallah -> 33 Elhamdülillah -> 33 Allahuekber)',
+                    tasbih.targetCount == 33
+                        ? 'Zincirleme Namaz Tesbihatı (33 Sübhanallah -> 33 Elhamdülillah -> 33 Allahuekber)'
+                        : (tasbih.targetCount == 0 ? 'Serbest Zikir Sayımı' : '${tasbih.targetCount}\'lik Devirli Tesbih'),
                     textAlign: TextAlign.center,
                     style: const TextStyle(color: Colors.white54, fontSize: 11),
+                  ),
+                  const SizedBox(height: 14),
+                  // Tesbih Boyutu Seçici: 33, 99, 111, 500, 1000, Serbest
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 6,
+                    alignment: WrapAlignment.center,
+                    children: [33, 99, 111, 500, 1000, 0].map((t) {
+                      final isSelected = tasbih.targetCount == t;
+                      final label = t == 0 ? 'Serbest' : (t >= 500 ? '$t Günlük' : '$t\'lük');
+                      return ChoiceChip(
+                        label: Text(
+                          label,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: isSelected ? Colors.white : Colors.white70,
+                          ),
+                        ),
+                        selected: isSelected,
+                        selectedColor: SukunColors.emeraldPrimary,
+                        backgroundColor: Colors.white10,
+                        side: BorderSide(
+                          color: isSelected ? SukunColors.emeraldPrimary : Colors.transparent,
+                        ),
+                        onSelected: (_) {
+                          notifier.setTargetCount(t);
+                        },
+                      );
+                    }).toList(),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 30),
             // Büyük Tesbihmatik Butonu
             GestureDetector(
               onTap: () {
@@ -156,7 +188,7 @@ class TasbihScreen extends ConsumerWidget {
                       ),
                     ),
                     Text(
-                      '/ ${tasbih.targetCount}',
+                      tasbih.targetCount == 0 ? '∞ Serbest' : '/ ${tasbih.targetCount}',
                       style: const TextStyle(color: Colors.white38, fontSize: 18),
                     ),
                   ],

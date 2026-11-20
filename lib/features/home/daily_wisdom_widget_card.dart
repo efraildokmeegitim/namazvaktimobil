@@ -22,34 +22,42 @@ class DailyWisdomWidgetCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: SukunColors.goldAccent.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(8),
+              Expanded(
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: SukunColors.goldAccent.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(Icons.lightbulb_rounded, size: 14, color: SukunColors.goldAccent),
                     ),
-                    child: const Icon(Icons.lightbulb_rounded, size: 14, color: SukunColors.goldAccent),
-                  ),
-                  const SizedBox(width: 8),
-                  const Text(
-                    'GÜNÜN HİKMETLİ SÖZÜ',
-                    style: TextStyle(
-                      color: SukunColors.goldAccent,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1.0,
+                    const SizedBox(width: 8),
+                    const Flexible(
+                      child: Text(
+                        'GÜNÜN HİKMETLİ SÖZÜ',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: SukunColors.goldAccent,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.8,
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+              const SizedBox(width: 6),
               InkWell(
                 onTap: onExploreFeed,
                 borderRadius: BorderRadius.circular(12),
                 child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                   child: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
                         'Tümünü Gör',

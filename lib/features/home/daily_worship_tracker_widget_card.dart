@@ -149,29 +149,37 @@ class _DailyWorshipTrackerWidgetCardState extends State<DailyWorshipTrackerWidge
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: SukunColors.emeraldPrimary.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(8),
+              Expanded(
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: SukunColors.emeraldPrimary.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(Icons.fact_check_rounded, size: 14, color: SukunColors.emeraldPrimary),
                     ),
-                    child: const Icon(Icons.fact_check_rounded, size: 14, color: SukunColors.emeraldPrimary),
-                  ),
-                  const SizedBox(width: 8),
-                  const Text(
-                    'GÜNLÜK İBÂDET VE VİRD TAKİBİ',
-                    style: TextStyle(
-                      color: SukunColors.emeraldPrimary,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1.0,
+                    const SizedBox(width: 8),
+                    const Flexible(
+                      child: Text(
+                        'GÜNLÜK İBÂDET VE VİRD TAKİBİ',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: SukunColors.emeraldPrimary,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.8,
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+              const SizedBox(width: 8),
               Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     '$doneCount / ${_items.length}',

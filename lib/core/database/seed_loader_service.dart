@@ -15,7 +15,7 @@ class SeedLoaderService {
     }
 
     final ilmiCount = await db.select(db.ilmiFeedItems).get();
-    if (ilmiCount.isEmpty) {
+    if (ilmiCount.length < 35) {
       await _seedIlmiFeed();
     }
 

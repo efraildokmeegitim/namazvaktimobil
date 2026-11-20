@@ -5,6 +5,7 @@ import '../../core/ui_kit/ui_kit.dart';
 
 enum SmartAlarmKind {
   prayerRelative('Namaz Vaktine Göreli (Dinamik)'),
+  specificDate('Belirli Bir Tarih ve Saat'),
   fixedTime('Sabit Saat / Günlük'),
   weekly('Haftalık Özel (Cuma / Sünnet Orucu)');
 
@@ -83,7 +84,8 @@ class _SmartAlarmsScreenState extends State<SmartAlarmsScreen> {
 
   void _showAddAlarmModal() {
     final titleController = TextEditingController();
-    SmartAlarmKind selectedKind = SmartAlarmKind.prayerRelative;
+    SmartAlarmKind selectedKind = SmartAlarmKind.specificDate;
+    DateTime selectedDate = DateTime.now().add(const Duration(days: 1));
     String selectedPrayer = 'İmsak';
     int offsetMinutes = 30;
     String selectedSound = 'Makamlı Ezan Tonu';
@@ -136,7 +138,7 @@ class _SmartAlarmsScreenState extends State<SmartAlarmsScreen> {
                       controller: titleController,
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
-                        labelText: 'Alarm Başlığı (Ör: Kuşluk Namazı)',
+                        labelText: 'Alarm Başlığı (Ör: Arefe Günü Teheccüd)',
                         labelStyle: const TextStyle(color: Colors.white60),
                         filled: true,
                         fillColor: Colors.black.withValues(alpha: 0.3),
@@ -152,19 +154,68 @@ class _SmartAlarmsScreenState extends State<SmartAlarmsScreen> {
                     const SizedBox(height: 8),
                     Wrap(
                       spacing: 8,
+                      runSpacing: 8,
                       children: SmartAlarmKind.values.map((k) {
                         final isSel = k == selectedKind;
                         return ChoiceChip(
-                          label: Text(k.label),
+                          label: Text(k.label, style: const TextStyle(fontSize: 12)),
                           selected: isSel,
                           onSelected: (_) => setModalState(() => selectedKind = k),
-                          selectedColor: SukunColors.emeraldPrimary.withValues(alpha: 0.25),
+                          selectedColor: SukunColors.emeraldPrimary.withValues(alpha: 0.35),
                         );
                       }).toList(),
                     ),
                     const SizedBox(height: 16),
 
-                    if (selectedKind == SmartAlarmKind.prayerRelative) ...[
+                    if (selectedKind == SmartAlarmKind.specificDate) ...[
+                      // Belirli Tarih ve Saat Seçimi
+                      Row(
+                        children: [
+                          Expanded(
+                            child: ListTile(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              tileColor: Colors.black.withValues(alpha: 0.3),
+                              leading: const Icon(Icons.calendar_month_rounded, color: SukunColors.goldAccent),
+                              title: const Text('Tarih', style: TextStyle(color: Colors.white70, fontSize: 11)),
+                              subtitle: Text(
+                                '${selectedDate.day.toString().padLeft(2, '0')}.${selectedDate.month.toString().padLeft(2, '0')}.${selectedDate.year}',
+                                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                              ),
+                              onTap: () async {
+                                final picked = await showDatePicker(
+                                  context: context,
+                                  initialDate: selectedDate,
+                                  firstDate: DateTime.now(),
+                                  lastDate: DateTime.now().add(const Duration(days: 730)),
+                                );
+                                if (picked != null) {
+                                  setModalState(() => selectedDate = picked);
+                                }
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: ListTile(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              tileColor: Colors.black.withValues(alpha: 0.3),
+                              leading: const Icon(Icons.access_time_rounded, color: SukunColors.emeraldPrimary),
+                              title: const Text('Saat', style: TextStyle(color: Colors.white70, fontSize: 11)),
+                              subtitle: Text(
+                                selectedFixedTime.format(context),
+                                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                              ),
+                              onTap: () async {
+                                final picked = await showTimePicker(context: context, initialTime: selectedFixedTime);
+                                if (picked != null) {
+                                  setModalState(() => selectedFixedTime = picked);
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ] else if (selectedKind == SmartAlarmKind.prayerRelative) ...[
                       const Text('Bağlı Namaz Vakti', style: TextStyle(color: Colors.white70, fontSize: 12)),
                       const SizedBox(height: 6),
                       DropdownButtonFormField<String>(
@@ -251,9 +302,15 @@ class _SmartAlarmsScreenState extends State<SmartAlarmsScreen> {
                       label: const Text('Alarmı Kaydet ve Etkinleştir', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                       onPressed: () {
                         final title = titleController.text.trim().isEmpty ? 'Özel Hatırlatıcı' : titleController.text.trim();
-                        final detail = selectedKind == SmartAlarmKind.prayerRelative
-                            ? '$selectedPrayer vaktinden $offsetMinutes dk önce'
-                            : '${selectedFixedTime.format(context)} vaktinde';
+                        final String detail;
+                        if (selectedKind == SmartAlarmKind.specificDate) {
+                          final d = '${selectedDate.day.toString().padLeft(2, '0')}.${selectedDate.month.toString().padLeft(2, '0')}.${selectedDate.year}';
+                          detail = '$d ${selectedFixedTime.format(context)} vaktinde';
+                        } else if (selectedKind == SmartAlarmKind.prayerRelative) {
+                          detail = '$selectedPrayer vaktinden $offsetMinutes dk önce';
+                        } else {
+                          detail = '${selectedFixedTime.format(context)} vaktinde';
+                        }
 
                         setState(() {
                           _alarmList.insert(
@@ -375,7 +432,9 @@ class _SmartAlarmsScreenState extends State<SmartAlarmsScreen> {
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
-                      alarm.kind == SmartAlarmKind.prayerRelative ? Icons.wb_twilight_rounded : Icons.alarm_rounded,
+                      alarm.kind == SmartAlarmKind.prayerRelative
+                          ? Icons.wb_twilight_rounded
+                          : (alarm.kind == SmartAlarmKind.specificDate ? Icons.calendar_month_rounded : Icons.alarm_rounded),
                       color: alarm.isEnabled ? SukunColors.emeraldPrimary : Colors.white38,
                       size: 22,
                     ),

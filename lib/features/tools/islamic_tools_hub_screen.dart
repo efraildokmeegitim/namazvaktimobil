@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/sukun_theme.dart';
 import '../../core/ui_kit/ui_kit.dart';
+import 'esmaul_husna_screen.dart';
+import 'prayer_guide_screen.dart';
+import 'hatim_tracker_screen.dart';
+import 'holy_days_checklist_screen.dart';
+import 'smart_camii_silent_service.dart';
 
 class IslamicToolsHubScreen extends StatefulWidget {
   const IslamicToolsHubScreen({super.key});
@@ -53,8 +58,16 @@ class _IslamicToolsHubScreenState extends State<IslamicToolsHubScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 14)),
+          Expanded(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: 14),
+            ),
+          ),
           Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               IconButton(
                 icon: const Icon(Icons.remove_circle_outline, color: Colors.white54, size: 22),
@@ -111,16 +124,23 @@ class _IslamicToolsHubScreenState extends State<IslamicToolsHubScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Row(
-                        children: [
-                          Icon(Icons.history_rounded, color: SukunColors.goldAccent, size: 20),
-                          SizedBox(width: 8),
-                          Text(
-                            'Kaza Namazı & Oruç Takipçisi',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: SukunColors.goldAccent),
-                          ),
-                        ],
+                      const Expanded(
+                        child: Row(
+                          children: [
+                            Icon(Icons.history_rounded, color: SukunColors.goldAccent, size: 20),
+                            SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                'Kaza Namazı & Oruç Takipçisi',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: SukunColors.goldAccent),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+                      const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                         decoration: BoxDecoration(
@@ -214,10 +234,15 @@ class _IslamicToolsHubScreenState extends State<IslamicToolsHubScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Verilmesi Gereken Zekât:',
-                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+                        const Expanded(
+                          child: Text(
+                            'Verilmesi Gereken Zekât:',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+                          ),
                         ),
+                        const SizedBox(width: 8),
                         Text(
                           '${_calculatedZakat.toStringAsFixed(2)} TL',
                           style: const TextStyle(
@@ -234,7 +259,238 @@ class _IslamicToolsHubScreenState extends State<IslamicToolsHubScreen> {
               ),
             ),
 
-            // 3. 5 Vakit Namaz Tesbihatı ve Aşr-ı Şerifler Rehberi
+            // 3. Esmâü'l-Hüsnâ (Allah'ın 99 İsmi ve Faziletleri)
+            SukunSurfaceCard(
+              enableGlass: true,
+              child: InkWell(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const EsmaulHusnaScreen()),
+                  );
+                },
+                child: Row(
+                  children: [
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: SukunColors.goldAccent.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: SukunColors.goldAccent.withValues(alpha: 0.35)),
+                      ),
+                      child: const Icon(Icons.stars_rounded, color: SukunColors.goldAccent, size: 24),
+                    ),
+                    const SizedBox(width: 14),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Esmâü\'l-Hüsnâ (99 İsim)',
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white),
+                          ),
+                          SizedBox(height: 2),
+                          Text(
+                            'Arapça hat, tecelli manaları ve zikir faziletleri',
+                            style: TextStyle(fontSize: 12, color: Colors.white54),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(Icons.arrow_forward_ios_rounded, color: SukunColors.goldAccent, size: 14),
+                  ],
+                ),
+              ),
+            ),
+
+            // 4. Detaylı Namaz İlmihali & Kılınış Rehberi
+            SukunSurfaceCard(
+              enableGlass: true,
+              child: InkWell(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const PrayerGuideScreen()),
+                  );
+                },
+                child: Row(
+                  children: [
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: SukunColors.emeraldPrimary.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: SukunColors.emeraldPrimary.withValues(alpha: 0.35)),
+                      ),
+                      child: const Icon(Icons.menu_book_rounded, color: SukunColors.emeraldPrimary, size: 24),
+                    ),
+                    const SizedBox(width: 14),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Resimli & Detaylı Namaz İlmihali',
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white),
+                          ),
+                          SizedBox(height: 2),
+                          Text(
+                            '5 vakit, cuma ve vitir namazı niyet, kıraat ve rekatları',
+                            style: TextStyle(fontSize: 12, color: Colors.white54),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(Icons.arrow_forward_ios_rounded, color: SukunColors.goldAccent, size: 14),
+                  ],
+                ),
+              ),
+            ),
+
+            // 5. Kişisel Hatim & Cüz Takipçisi
+            SukunSurfaceCard(
+              enableGlass: true,
+              child: InkWell(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const HatimTrackerScreen()),
+                  );
+                },
+                child: Row(
+                  children: [
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: SukunColors.goldAccent.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: SukunColors.goldAccent.withValues(alpha: 0.35)),
+                      ),
+                      child: const Icon(Icons.bookmark_added_rounded, color: SukunColors.goldAccent, size: 24),
+                    ),
+                    const SizedBox(width: 14),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Kişisel Hatim & Cüz Takipçisi',
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white),
+                          ),
+                          SizedBox(height: 2),
+                          Text(
+                            'Kişisel günlük sayfa hedefi, cüz hesabı ve kalan gün takvimi',
+                            style: TextStyle(fontSize: 12, color: Colors.white54),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(Icons.arrow_forward_ios_rounded, color: SukunColors.goldAccent, size: 14),
+                  ],
+                ),
+              ),
+            ),
+
+            // 6. Mübarek Gün ve Gece İbadet Rehberi
+            SukunSurfaceCard(
+              enableGlass: true,
+              child: InkWell(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const HolyDaysChecklistScreen()),
+                  );
+                },
+                child: Row(
+                  children: [
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: SukunColors.emeraldPrimary.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: SukunColors.emeraldPrimary.withValues(alpha: 0.35)),
+                      ),
+                      child: const Icon(Icons.checklist_rounded, color: SukunColors.emeraldPrimary, size: 24),
+                    ),
+                    const SizedBox(width: 14),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Cuma & Kandil İbadet Programları',
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white),
+                          ),
+                          SizedBox(height: 2),
+                          Text(
+                            'Cuma günü sünnetleri, kandil gecesi ibadet kontrol listesi',
+                            style: TextStyle(fontSize: 12, color: Colors.white54),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(Icons.arrow_forward_ios_rounded, color: SukunColors.goldAccent, size: 14),
+                  ],
+                ),
+              ),
+            ),
+
+            // 7. Akıllı Cami Sessiz Modu Hızlı Anahtarı
+            SukunSurfaceCard(
+              enableGlass: true,
+              child: Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.white12),
+                    ),
+                    child: const Icon(Icons.vibration_rounded, color: Colors.white, size: 24),
+                  ),
+                  const SizedBox(width: 14),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Cami / İbadet Sessiz Modu',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white),
+                        ),
+                        SizedBox(height: 2),
+                        Text(
+                          'Tek tıkla telefonu titreşim / sessiz moda al',
+                          style: TextStyle(fontSize: 12, color: Colors.white54),
+                        ),
+                      ],
+                    ),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: SukunColors.emeraldPrimary,
+                      foregroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                    ),
+                    onPressed: () async {
+                      final success = await SmartCamiiSilentService.setSilentMode();
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(success ? 'Telefon sessiz / titreşim moduna alındı.' : 'Zil sesi ayarlandı.'),
+                            backgroundColor: SukunColors.emeraldPrimary,
+                          ),
+                        );
+                      }
+                    },
+                    child: const Text('Sessize Al', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                  ),
+                ],
+              ),
+            ),
+
+            // 8. 5 Vakit Namaz Tesbihatı ve Aşr-ı Şerifler Rehberi
             SukunSurfaceCard(
               enableGlass: true,
               child: const Column(
@@ -244,9 +500,13 @@ class _IslamicToolsHubScreenState extends State<IslamicToolsHubScreen> {
                     children: [
                       Icon(Icons.auto_stories_rounded, color: SukunColors.goldAccent, size: 20),
                       SizedBox(width: 8),
-                      Text(
-                        '5 Vakit Namaz Sonrası Tesbihatı & Aşr-ı Şerifler',
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: SukunColors.goldAccent),
+                      Expanded(
+                        child: Text(
+                          '5 Vakit Namaz Sonrası Tesbihatı & Aşr-ı Şerifler',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: SukunColors.goldAccent),
+                        ),
                       ),
                     ],
                   ),

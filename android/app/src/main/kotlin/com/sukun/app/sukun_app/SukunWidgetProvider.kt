@@ -1,0 +1,135 @@
+package com.sukun.app.sukun_app
+
+import android.app.PendingIntent
+import android.appwidget.AppWidgetManager
+import android.appwidget.AppWidgetProvider
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.widget.RemoteViews
+import org.json.JSONObject
+
+class SukunWidgetProvider : AppWidgetProvider() {
+
+    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+        for (appWidgetId in appWidgetIds) {
+            updateAppWidget(context, appWidgetManager, appWidgetId)
+        }
+    }
+
+    companion object {
+        fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+            val prefs = context.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
+            val jsonString = prefs.getString("flutter.sukun_widget_data", null)
+
+            var location = "İstanbul"
+            var nextPrayer = "İKİNDİ"
+            var remaining = "02:14:35"
+            var nextTime = "15:42"
+            var fajr = "06:05"
+            var sunrise = "07:32"
+            var dhuhr = "13:02"
+            var asr = "15:42"
+            var maghrib = "18:01"
+            var isha = "19:24"
+
+            if (jsonString != null) {
+                try {
+                    val obj = JSONObject(jsonString)
+                    location = obj.optString("locationName", location)
+                    nextPrayer = obj.optString("nextPrayerName", nextPrayer)
+                    fajr = obj.optString("fajr", fajr)
+                    sunrise = obj.optString("sunrise", sunrise)
+                    dhuhr = obj.optString("dhuhr", dhuhr)
+                    asr = obj.optString("asr", asr)
+                    maghrib = obj.optString("maghrib", maghrib)
+                    isha = obj.optString("isha", isha)
+
+                    val remSec = obj.optLong("remainingSeconds", 0)
+                    val h = remSec / 3600
+                    val m = (remSec % 3600) / 60
+                    val s = remSec % 60
+                    remaining = String.format("%02d:%02d:%02d", h, m, s)
+                    nextTime = when (nextPrayer.uppercase()) {
+                        "İMSAK", "SABAH" -> fajr
+                        "GÜNEŞ" -> sunrise
+                        "ÖĞLE" -> dhuhr
+                        "İKİNDİ" -> asr
+                        "AKŞAM" -> maghrib
+                        "YATSI" -> isha
+                        else -> asr
+                    }
+                } catch (_: Exception) {}
+            }
+
+            // Small 2x2 widget
+            val smallViews = RemoteViews(context.packageName, R.layout.sukun_widget_small_layout).apply {
+                setTextViewText(R.id.widget_small_location, location)
+                setTextViewText(R.id.widget_small_prayer_name, "$nextPrayer VAKTİNE")
+                setTextViewText(R.id.widget_small_timer, remaining)
+                setTextViewText(R.id.widget_small_prayer_time, "Vakit: $nextTime")
+
+                val intent = Intent(context, MainActivity::class.java)
+                val pendingIntent = PendingIntent.getActivity(
+                    context, 0, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+                setOnClickPendingIntent(R.id.widget_small_root, pendingIntent)
+            }
+
+            // Medium 4x2 widget
+            val mediumViews = RemoteViews(context.packageName, R.layout.sukun_widget_medium_layout).apply {
+                setTextViewText(R.id.widget_medium_location, "$location • SÜKÛN")
+                setTextViewText(R.id.widget_medium_next_countdown, "$nextPrayer: $remaining")
+                setTextViewText(R.id.widget_time_fajr, fajr)
+                setTextViewText(R.id.widget_time_sunrise, sunrise)
+                setTextViewText(R.id.widget_time_dhuhr, dhuhr)
+                setTextViewText(R.id.widget_time_asr, asr)
+                setTextViewText(R.id.widget_time_maghrib, maghrib)
+                setTextViewText(R.id.widget_time_isha, isha)
+
+                val intent = Intent(context, MainActivity::class.java)
+                val pendingIntent = PendingIntent.getActivity(
+                    context, 1, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+                setOnClickPendingIntent(R.id.widget_medium_root, pendingIntent)
+            }
+
+            val appWidgetInfo = appWidgetManager.getAppWidgetInfo(appWidgetId)
+            if (appWidgetInfo != null && appWidgetInfo.initialLayout == R.layout.sukun_widget_medium_layout) {
+                appWidgetManager.updateAppWidget(appWidgetId, mediumViews)
+            } else {
+                appWidgetManager.updateAppWidget(appWidgetId, smallViews)
+            }
+        }
+
+        fun updateAllWidgets(context: Context) {
+            val appWidgetManager = AppWidgetManager.getInstance(context)
+            val smallIds = appWidgetManager.getAppWidgetIds(ComponentName(context, SukunWidgetSmallProvider::class.java))
+            for (id in smallIds) {
+                updateAppWidget(context, appWidgetManager, id)
+            }
+            val mediumIds = appWidgetManager.getAppWidgetIds(ComponentName(context, SukunWidgetMediumProvider::class.java))
+            for (id in mediumIds) {
+                updateAppWidget(context, appWidgetManager, id)
+            }
+        }
+    }
+}
+
+class SukunWidgetSmallProvider : AppWidgetProvider() {
+    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+        for (id in appWidgetIds) {
+            SukunWidgetProvider.updateAppWidget(context, appWidgetManager, id)
+        }
+    }
+}
+
+class SukunWidgetMediumProvider : AppWidgetProvider() {
+    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+        for (id in appWidgetIds) {
+            SukunWidgetProvider.updateAppWidget(context, appWidgetManager, id)
+        }
+    }
+}

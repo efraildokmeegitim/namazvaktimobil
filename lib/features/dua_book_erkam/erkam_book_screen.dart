@@ -97,22 +97,30 @@ class ErkamBookScreen extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: TextField(
               onChanged: (val) => ref.read(erkamSearchQueryProvider.notifier).state = val,
+              style: TextStyle(
+                fontSize: 14,
+                color: isSepia ? SukunColors.sepiaInkText : Colors.white,
+              ),
               decoration: InputDecoration(
                 hintText: 'Dualarda, başlıklarda veya sayfalarda ara...',
-                hintStyle: TextStyle(fontSize: 13, color: isSepia ? Colors.brown.withValues(alpha: 0.6) : Colors.white38),
-                prefixIcon: Icon(Icons.search, size: 20, color: isSepia ? Colors.brown : SukunColors.goldAccent),
+                hintStyle: TextStyle(fontSize: 13, color: isSepia ? const Color(0xFF6E583B) : Colors.white60),
+                prefixIcon: Icon(Icons.search, size: 20, color: isSepia ? const Color(0xFF5A4428) : SukunColors.goldAccent),
                 suffixIcon: ref.watch(erkamSearchQueryProvider).isNotEmpty
                     ? IconButton(
-                        icon: const Icon(Icons.clear, size: 18),
+                        icon: Icon(Icons.clear, size: 18, color: isSepia ? SukunColors.sepiaInkText : Colors.white70),
                         onPressed: () => ref.read(erkamSearchQueryProvider.notifier).state = '',
                       )
                     : null,
                 filled: true,
-                fillColor: isSepia ? const Color(0xFFE2D6B5) : SukunColors.carbonCardSurface,
+                fillColor: isSepia ? const Color(0xFFDECFA9) : SukunColors.carbonCardSurface,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
+                  borderSide: isSepia ? const BorderSide(color: Color(0xFFC7B38A), width: 1) : BorderSide.none,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: isSepia ? const BorderSide(color: Color(0xFFC7B38A), width: 1) : const BorderSide(color: Colors.white12, width: 1),
                 ),
               ),
             ),
@@ -132,18 +140,28 @@ class ErkamBookScreen extends ConsumerWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (cat == ErkamCategoryFilter.favorites) ...[
-                          const Icon(Icons.star_rounded, size: 14, color: SukunColors.goldAccent),
+                          Icon(Icons.star_rounded, size: 14, color: isSel ? SukunColors.goldAccent : (isSepia ? const Color(0xFF8A6D3B) : SukunColors.goldAccent)),
                           const SizedBox(width: 4),
                         ],
                         if (cat == ErkamCategoryFilter.selamAyetleri || cat == ErkamCategoryFilter.hifzAyetleri) ...[
-                          const Icon(Icons.shield_outlined, size: 14, color: SukunColors.emeraldPrimary),
+                          Icon(Icons.shield_outlined, size: 14, color: isSel ? SukunColors.emeraldPrimary : (isSepia ? const Color(0xFF1E6F50) : SukunColors.emeraldPrimary)),
                           const SizedBox(width: 4),
                         ],
-                        Text(cat.label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                        Text(
+                          cat.label,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: isSel
+                                ? (isSepia ? const Color(0xFF1A140E) : Colors.white)
+                                : (isSepia ? const Color(0xFF53412B) : Colors.white70),
+                          ),
+                        ),
                       ],
                     ),
                     selected: isSel,
                     onSelected: (_) => ref.read(erkamActiveCategoryProvider.notifier).state = cat,
+                    backgroundColor: isSepia ? const Color(0xFFE4D5B3) : Colors.white.withValues(alpha: 0.05),
                     selectedColor: isSepia
                         ? const Color(0xFFCABA94)
                         : (cat == ErkamCategoryFilter.favorites
@@ -165,11 +183,11 @@ class ErkamBookScreen extends ConsumerWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.auto_stories_outlined, size: 48, color: isSepia ? Colors.brown : Colors.white30),
+                          Icon(Icons.auto_stories_outlined, size: 48, color: isSepia ? const Color(0xFF6E583B) : Colors.white30),
                           const SizedBox(height: 12),
                           Text(
                             'Bu kategoride kayıtlı sayfa bulunamadı.',
-                            style: TextStyle(color: isSepia ? Colors.brown : Colors.white60),
+                            style: TextStyle(color: isSepia ? const Color(0xFF53412B) : Colors.white60),
                           ),
                         ],
                       ),
@@ -188,7 +206,7 @@ class ErkamBookScreen extends ConsumerWidget {
                     return Container(
                       margin: const EdgeInsets.only(bottom: 24),
                       decoration: BoxDecoration(
-                        color: isSepia ? const Color(0xFFF7F1E1) : SukunColors.carbonCardSurface,
+                        color: isSepia ? const Color(0xFFF9F5EA) : SukunColors.carbonCardSurface,
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
                           color: isSepia ? const Color(0xFFD8C7A5) : Colors.white12,
@@ -229,7 +247,7 @@ class ErkamBookScreen extends ConsumerWidget {
                                       fontSize: 10,
                                       letterSpacing: 1.2,
                                       fontWeight: FontWeight.bold,
-                                      color: isSepia ? const Color(0xFF7A6548) : Colors.white38,
+                                      color: isSepia ? const Color(0xFF5A4428) : Colors.white60,
                                     ),
                                   ),
                                 ),
@@ -238,7 +256,7 @@ class ErkamBookScreen extends ConsumerWidget {
                                     IconButton(
                                       icon: Icon(
                                         page.isFavorite == 1 ? Icons.star_rounded : Icons.star_border_rounded,
-                                        color: SukunColors.goldAccent,
+                                        color: isSepia ? const Color(0xFF9E782F) : SukunColors.goldAccent,
                                         size: 20,
                                       ),
                                       padding: EdgeInsets.zero,
@@ -251,7 +269,7 @@ class ErkamBookScreen extends ConsumerWidget {
                                       style: TextStyle(
                                         fontSize: 11,
                                         fontWeight: FontWeight.bold,
-                                        color: isSepia ? SukunColors.sepiaInkText : SukunColors.goldAccent,
+                                        color: isSepia ? const Color(0xFF3E2C1A) : SukunColors.goldAccent,
                                       ),
                                     ),
                                   ],
@@ -265,7 +283,7 @@ class ErkamBookScreen extends ConsumerWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                Center(
+                                 Center(
                                   child: Text(
                                     page.chapterTitle,
                                     textAlign: TextAlign.center,
@@ -273,12 +291,12 @@ class ErkamBookScreen extends ConsumerWidget {
                                       fontSize: 17,
                                       fontWeight: FontWeight.bold,
                                       letterSpacing: 0.5,
-                                      color: isSepia ? const Color(0xFF5A4428) : SukunColors.goldAccent,
+                                      color: isSepia ? const Color(0xFF2B1D0E) : SukunColors.goldAccent,
                                     ),
                                   ),
                                 ),
                                 if (page.subTitle != null) ...[
-                                  const SizedBox(height: 4),
+                                  const SizedBox(height: 6),
                                   Center(
                                     child: Text(
                                       page.subTitle!,
@@ -286,7 +304,7 @@ class ErkamBookScreen extends ConsumerWidget {
                                       style: TextStyle(
                                         fontSize: 13,
                                         fontStyle: FontStyle.italic,
-                                        color: isSepia ? const Color(0xFF7A6548) : Colors.white70,
+                                        color: isSepia ? const Color(0xFF4A3722) : Colors.white70,
                                       ),
                                     ),
                                   ),
@@ -299,7 +317,8 @@ class ErkamBookScreen extends ConsumerWidget {
                                     translation: page.meaningTr,
                                     arabicFontSize: fontSize + 4,
                                     showTransliteration: showTranslit,
-                                    textColor: isSepia ? SukunColors.sepiaInkText : null,
+                                    textColor: isSepia ? const Color(0xFF1A130B) : SukunColors.carbonTextPrimary,
+                                    secondaryTextColor: isSepia ? const Color(0xFF4A3722) : SukunColors.carbonTextSecondary,
                                   ),
                                 if (page.arabicContent == null)
                                   Text(
@@ -307,23 +326,26 @@ class ErkamBookScreen extends ConsumerWidget {
                                     style: TextStyle(
                                       fontSize: fontSize,
                                       height: 1.8,
-                                      color: isSepia ? SukunColors.sepiaInkText : null,
+                                      color: isSepia ? const Color(0xFF1A130B) : SukunColors.carbonTextPrimary,
                                     ),
                                   ),
                                 if (page.virtueAndSource != null) ...[
                                   const SizedBox(height: 14),
                                   Container(
-                                    padding: const EdgeInsets.all(8),
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                                     decoration: BoxDecoration(
-                                      color: isSepia ? const Color(0xFFECE2CB) : Colors.white.withValues(alpha: 0.04),
+                                      color: isSepia ? const Color(0xFFEADFC3) : Colors.white.withValues(alpha: 0.05),
                                       borderRadius: BorderRadius.circular(6),
+                                      border: Border.all(
+                                        color: isSepia ? const Color(0xFFD6C5A0) : Colors.white12,
+                                      ),
                                     ),
                                     child: Text(
                                       'Fazilet ve Kaynak: ${page.virtueAndSource!}',
                                       style: TextStyle(
                                         fontSize: 11,
                                         fontStyle: FontStyle.italic,
-                                        color: isSepia ? const Color(0xFF6B583E) : Colors.white54,
+                                        color: isSepia ? const Color(0xFF4A3722) : Colors.white70,
                                       ),
                                     ),
                                   ),
@@ -337,7 +359,7 @@ class ErkamBookScreen extends ConsumerWidget {
                             decoration: BoxDecoration(
                               border: Border(
                                 top: BorderSide(
-                                  color: isSepia ? const Color(0xFFEADFC3) : Colors.white10,
+                                  color: isSepia ? const Color(0xFFD8C7A5) : Colors.white10,
                                 ),
                               ),
                             ),
@@ -347,7 +369,7 @@ class ErkamBookScreen extends ConsumerWidget {
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
-                                  color: isSepia ? const Color(0xFF8A7659) : Colors.white38,
+                                  color: isSepia ? const Color(0xFF5A4428) : Colors.white60,
                                 ),
                               ),
                             ),
@@ -374,7 +396,8 @@ class ErkamBookScreen extends ConsumerWidget {
                     padding: const EdgeInsets.all(16),
                     child: SukunSurfaceCard(
                       enableGlass: !isSepia,
-                      customBackground: isSepia ? const Color(0xFFEADFC3) : null,
+                      customBackground: isSepia ? const Color(0xFFF9F5EA) : null,
+                      borderColor: isSepia ? const Color(0xFFD8C7A5) : null,
                       child: SingleChildScrollView(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -385,26 +408,26 @@ class ErkamBookScreen extends ConsumerWidget {
                                 Text(
                                   'Sayfa ${page.pageNumber}',
                                   style: TextStyle(
-                                    color: isSepia ? SukunColors.sepiaInkText : SukunColors.goldAccent,
+                                    color: isSepia ? const Color(0xFF3E2C1A) : SukunColors.goldAccent,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 IconButton(
                                   icon: Icon(
                                     page.isFavorite == 1 ? Icons.star_rounded : Icons.star_border_rounded,
-                                    color: SukunColors.goldAccent,
+                                    color: isSepia ? const Color(0xFF9E782F) : SukunColors.goldAccent,
                                   ),
                                   onPressed: () => actions.toggleFavorite(page.pageNumber, page.isFavorite == 1),
                                 ),
                               ],
                             ),
-                            const Divider(height: 16),
+                            Divider(height: 16, color: isSepia ? const Color(0xFFD8C7A5) : Colors.white12),
                             Text(
                               page.chapterTitle,
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: isSepia ? SukunColors.sepiaInkText : null,
+                                color: isSepia ? const Color(0xFF2B1D0E) : Colors.white,
                               ),
                             ),
                             if (page.subTitle != null) ...[
@@ -414,7 +437,7 @@ class ErkamBookScreen extends ConsumerWidget {
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontStyle: FontStyle.italic,
-                                  color: isSepia ? SukunColors.sepiaInkText.withValues(alpha: 0.7) : Colors.white70,
+                                  color: isSepia ? const Color(0xFF4A3722) : Colors.white70,
                                 ),
                               ),
                             ],
@@ -426,7 +449,8 @@ class ErkamBookScreen extends ConsumerWidget {
                                 translation: page.meaningTr,
                                 arabicFontSize: fontSize + 4,
                                 showTransliteration: showTranslit,
-                                textColor: isSepia ? SukunColors.sepiaInkText : null,
+                                textColor: isSepia ? const Color(0xFF1A130B) : SukunColors.carbonTextPrimary,
+                                secondaryTextColor: isSepia ? const Color(0xFF4A3722) : SukunColors.carbonTextSecondary,
                               ),
                             if (page.arabicContent == null)
                               Text(
@@ -434,17 +458,27 @@ class ErkamBookScreen extends ConsumerWidget {
                                 style: TextStyle(
                                   fontSize: fontSize,
                                   height: 1.6,
-                                  color: isSepia ? SukunColors.sepiaInkText : null,
+                                  color: isSepia ? const Color(0xFF1A130B) : SukunColors.carbonTextPrimary,
                                 ),
                               ),
                             if (page.virtueAndSource != null) ...[
                               const SizedBox(height: 16),
-                              Text(
-                                'Fazilet & Kaynak: ${page.virtueAndSource!}',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontStyle: FontStyle.italic,
-                                  color: isSepia ? SukunColors.sepiaInkText.withValues(alpha: 0.6) : Colors.white54,
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: isSepia ? const Color(0xFFEADFC3) : Colors.white.withValues(alpha: 0.05),
+                                  borderRadius: BorderRadius.circular(6),
+                                  border: Border.all(
+                                    color: isSepia ? const Color(0xFFD6C5A0) : Colors.white12,
+                                  ),
+                                ),
+                                child: Text(
+                                  'Fazilet & Kaynak: ${page.virtueAndSource!}',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontStyle: FontStyle.italic,
+                                    color: isSepia ? const Color(0xFF4A3722) : Colors.white70,
+                                  ),
                                 ),
                               ),
                             ],
@@ -466,7 +500,8 @@ class ErkamBookScreen extends ConsumerWidget {
               final page = pages[index];
               return SukunSurfaceCard(
                 enableGlass: !isSepia,
-                customBackground: isSepia ? const Color(0xFFEADFC3) : null,
+                customBackground: isSepia ? const Color(0xFFF9F5EA) : null,
+                borderColor: isSepia ? const Color(0xFFD8C7A5) : null,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -476,7 +511,7 @@ class ErkamBookScreen extends ConsumerWidget {
                         Text(
                           'Sayfa ${page.pageNumber} • ${page.chapterTitle}',
                           style: TextStyle(
-                            color: isSepia ? SukunColors.sepiaInkText : SukunColors.goldAccent,
+                            color: isSepia ? const Color(0xFF3E2C1A) : SukunColors.goldAccent,
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
                           ),
@@ -484,7 +519,7 @@ class ErkamBookScreen extends ConsumerWidget {
                         IconButton(
                           icon: Icon(
                             page.isFavorite == 1 ? Icons.star_rounded : Icons.star_border_rounded,
-                            color: SukunColors.goldAccent,
+                            color: isSepia ? const Color(0xFF9E782F) : SukunColors.goldAccent,
                             size: 20,
                           ),
                           onPressed: () => actions.toggleFavorite(page.pageNumber, page.isFavorite == 1),
@@ -497,7 +532,7 @@ class ErkamBookScreen extends ConsumerWidget {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: isSepia ? SukunColors.sepiaInkText : null,
+                          color: isSepia ? const Color(0xFF2B1D0E) : Colors.white,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -509,7 +544,8 @@ class ErkamBookScreen extends ConsumerWidget {
                         translation: page.meaningTr,
                         arabicFontSize: fontSize + 2,
                         showTransliteration: showTranslit,
-                        textColor: isSepia ? SukunColors.sepiaInkText : null,
+                        textColor: isSepia ? const Color(0xFF1A130B) : SukunColors.carbonTextPrimary,
+                        secondaryTextColor: isSepia ? const Color(0xFF4A3722) : SukunColors.carbonTextSecondary,
                       ),
                     if (page.arabicContent == null)
                       Text(
@@ -517,16 +553,26 @@ class ErkamBookScreen extends ConsumerWidget {
                         style: TextStyle(
                           fontSize: fontSize,
                           height: 1.5,
-                          color: isSepia ? SukunColors.sepiaInkText : null,
+                          color: isSepia ? const Color(0xFF1A130B) : SukunColors.carbonTextPrimary,
                         ),
                       ),
                     if (page.virtueAndSource != null) ...[
                       const SizedBox(height: 12),
-                      Text(
-                        page.virtueAndSource!,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: isSepia ? SukunColors.sepiaInkText.withValues(alpha: 0.6) : Colors.white54,
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: isSepia ? const Color(0xFFEADFC3) : Colors.white.withValues(alpha: 0.05),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
+                            color: isSepia ? const Color(0xFFD6C5A0) : Colors.white12,
+                          ),
+                        ),
+                        child: Text(
+                          page.virtueAndSource!,
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: isSepia ? const Color(0xFF4A3722) : Colors.white70,
+                          ),
                         ),
                       ),
                     ],
@@ -582,10 +628,10 @@ class _ErkamDuaDrawer extends ConsumerWidget {
     final drawerSearch = ref.watch(erkamDrawerSearchQueryProvider).trim().toLowerCase();
     final activeCat = ref.watch(erkamActiveCategoryProvider);
 
-    final drawerBg = isSepia ? const Color(0xFFF0E5C9) : SukunColors.carbonCardSurface;
-    final headerBg = isSepia ? const Color(0xFFDECFA9) : const Color(0xFF16211E);
-    final primaryTextColor = isSepia ? SukunColors.sepiaInkText : SukunColors.carbonTextPrimary;
-    final subTextColor = isSepia ? const Color(0xFF7A6548) : Colors.white60;
+    final drawerBg = isSepia ? const Color(0xFFF7F1E1) : SukunColors.carbonCardSurface;
+    final headerBg = isSepia ? const Color(0xFFE8DBC0) : const Color(0xFF16211E);
+    final primaryTextColor = isSepia ? const Color(0xFF1A130B) : SukunColors.carbonTextPrimary;
+    final subTextColor = isSepia ? const Color(0xFF4A3722) : Colors.white70;
 
     return Drawer(
       backgroundColor: drawerBg,

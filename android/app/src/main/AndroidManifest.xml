@@ -8,7 +8,8 @@
     <application
         android:label="SÜKÛN"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -31,6 +32,32 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <!-- SÜKÛN Vakit Sayacı 2x2 Widget -->
+        <receiver
+            android:name=".SukunWidgetSmallProvider"
+            android:exported="true"
+            android:label="@string/widget_small_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/sukun_widget_small_info" />
+        </receiver>
+
+        <!-- SÜKÛN 6 Vakit Tablosu 4x2 Widget -->
+        <receiver
+            android:name=".SukunWidgetMediumProvider"
+            android:exported="true"
+            android:label="@string/widget_medium_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/sukun_widget_medium_info" />
+        </receiver>
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

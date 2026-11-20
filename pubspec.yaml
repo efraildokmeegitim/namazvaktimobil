@@ -45,6 +45,9 @@ flutter:
     - assets/fonts/
 
   fonts:
+    - family: HafizOsman
+      fonts:
+        - asset: assets/fonts/KuranKerimFontHamdullah.ttf
     - family: HayratNesih
       fonts:
         - asset: assets/fonts/AmiriQuran-Regular.ttf

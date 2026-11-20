@@ -10,6 +10,7 @@ import '../ilmi_feed/ilmi_feed_screen.dart';
 import '../quran/quran_screen.dart';
 import '../dua_book_erkam/erkam_book_screen.dart';
 import '../tools/islamic_tools_hub_screen.dart';
+import '../../core/notifications/lock_screen_prayer_notification_service.dart';
 import 'daily_wisdom_widget_card.dart';
 import 'ramadan_imsakiye_widget_card.dart';
 import 'daily_worship_tracker_widget_card.dart';
@@ -23,6 +24,12 @@ class SukunMasterScaffold extends ConsumerStatefulWidget {
 
 class _SukunMasterScaffoldState extends ConsumerState<SukunMasterScaffold> {
   int _currentTabIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    LockScreenPrayerNotificationService.requestPermission();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +130,7 @@ class SukunDashboardTab extends ConsumerWidget {
       borderRadius: BorderRadius.circular(16),
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
         decoration: BoxDecoration(
           color: SukunColors.carbonCardSurface,
           borderRadius: BorderRadius.circular(16),
@@ -132,17 +139,21 @@ class SukunDashboardTab extends ConsumerWidget {
         child: Column(
           children: [
             Container(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(9),
               decoration: BoxDecoration(
                 color: color.withValues(alpha: 0.15),
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, color: color, size: 22),
+              child: Icon(icon, color: color, size: 20),
             ),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: Colors.white),
+            const SizedBox(height: 6),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                label,
+                maxLines: 1,
+                style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11.5, color: Colors.white),
+              ),
             ),
           ],
         ),
@@ -197,7 +208,7 @@ class SukunDashboardTab extends ConsumerWidget {
 
                 // 2. Hızlı Erişim İbadet Kısayolları (Grid)
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   child: Row(
                     children: [
                       Expanded(
@@ -208,7 +219,7 @@ class SukunDashboardTab extends ConsumerWidget {
                           onTap: () => context.push('/qibla'),
                         ),
                       ),
-                      const SizedBox(width: 10),
+                      const SizedBox(width: 6),
                       Expanded(
                         child: _buildQuickGridItem(
                           icon: Icons.fingerprint_rounded,
@@ -217,7 +228,7 @@ class SukunDashboardTab extends ConsumerWidget {
                           onTap: () => context.push('/tasbih'),
                         ),
                       ),
-                      const SizedBox(width: 10),
+                      const SizedBox(width: 6),
                       Expanded(
                         child: _buildQuickGridItem(
                           icon: Icons.mosque_rounded,
@@ -226,7 +237,7 @@ class SukunDashboardTab extends ConsumerWidget {
                           onTap: () => context.push('/mosques'),
                         ),
                       ),
-                      const SizedBox(width: 10),
+                      const SizedBox(width: 6),
                       Expanded(
                         child: _buildQuickGridItem(
                           icon: Icons.alarm_rounded,
