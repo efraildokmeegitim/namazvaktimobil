@@ -15,6 +15,7 @@
 - [x] **%100 Çevrimdışı Donanımsal GPS & Şehir Tespiti**: Cihaz GPS donanımı + 81 il Haversine trigonometrisi ile internet harcamadan anında konum ve vakit güncelleme.
 - [x] **Masaüstü Widget Çözümü**: RemoteViews uyumsuz View etiketleri düzeltildi, zikirmatik ve namaz widgetları telefona kuruldu.
 - [x] **Anasayfa Hero Kartı Masaüstü Widget'ına Dönüştürüldü**: Uygulama anasayfasındaki ModernDashboardHero (Konum, Hicri Tarih, Vakte Kalan Sayaç, Vakit Saati rozeti ve 6 Vakit şeridi) birebir Android masaüstü widget'ına taşındı.
+- [x] **Zengin İslamî Kart Widget'ı (4x3 / 4x4)**: Konum, Hicri Takvim, Vakte Kalan Sayaç, 6 Vakit Tablosu ve Günün Hikmeti/Ayetini birleştiren zengin masaüstü kartı tasarlandı.
 
 ## Kalite & Test Durumu
 - `flutter analyze`: 0 hata, 0 uyarı.
