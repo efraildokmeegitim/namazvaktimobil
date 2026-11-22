@@ -22,15 +22,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="✦ "
-            android:textColor="#D4AF6A"
-            android:textSize="10sp" />
+            android:textColor="#E5C170"
+            android:textSize="11sp" />
 
         <TextView
             android:id="@+id/widget_small_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:letterSpacing="0.02"
             android:text="İstanbul, Fatih"
-            android:textColor="#9EAEAA"
+            android:textColor="#B0C4BC"
             android:textSize="11sp"
             android:textStyle="bold" />
     </LinearLayout>
@@ -40,11 +41,11 @@
         android:id="@+id/widget_small_prayer_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="5dp"
         android:letterSpacing="0.08"
         android:text="İKİNDİYE KALAN"
-        android:textColor="#D4AF6A"
-        android:textSize="12sp"
+        android:textColor="#E5C170"
+        android:textSize="11sp"
         android:textStyle="bold" />
 
     <!-- Büyük Sayaç -->
@@ -65,14 +66,14 @@
         android:id="@+id/widget_small_prayer_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="6dp"
         android:background="@drawable/sukun_widget_active_box"
-        android:paddingStart="10dp"
-        android:paddingTop="3dp"
-        android:paddingEnd="10dp"
-        android:paddingBottom="3dp"
+        android:paddingStart="12dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="4dp"
         android:text="Ezan: 15:42"
-        android:textColor="#1FA87C"
+        android:textColor="#35B888"
         android:textSize="11sp"
         android:textStyle="bold" />
 </LinearLayout>
