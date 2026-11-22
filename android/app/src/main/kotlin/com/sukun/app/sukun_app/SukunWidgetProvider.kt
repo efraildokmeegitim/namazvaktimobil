@@ -33,10 +33,13 @@ class SukunWidgetProvider : AppWidgetProvider() {
             var maghrib = "18:01"
             var isha = "19:24"
 
+            var hijriDate = "13 Cemâziyelâhir 1448"
+
             if (jsonString != null) {
                 try {
                     val obj = JSONObject(jsonString)
                     location = obj.optString("locationName", location)
+                    hijriDate = obj.optString("hijriDate", hijriDate)
                     nextPrayer = obj.optString("nextPrayerName", nextPrayer)
                     fajr = obj.optString("fajr", fajr)
                     sunrise = obj.optString("sunrise", sunrise)
@@ -79,10 +82,14 @@ class SukunWidgetProvider : AppWidgetProvider() {
                 setOnClickPendingIntent(R.id.widget_small_root, pendingIntent)
             }
 
-            // Medium 4x2 widget
+            // Medium 4x2 widget - Anasayfa ModernDashboardHero stili
             val mediumViews = RemoteViews(context.packageName, R.layout.sukun_widget_medium_layout).apply {
-                setTextViewText(R.id.widget_medium_location, "$location • SÜKÛN")
-                setTextViewText(R.id.widget_medium_next_countdown, "$nextPrayer: $remaining")
+                setTextViewText(R.id.widget_medium_location, location)
+                setTextViewText(R.id.widget_medium_hijri_date, hijriDate)
+                setTextViewText(R.id.widget_medium_hero_label, "${nextPrayer.uppercase()} VAKTİNE KALAN")
+                setTextViewText(R.id.widget_medium_hero_timer, remaining)
+                setTextViewText(R.id.widget_medium_next_prayer_time, nextTime)
+
                 setTextViewText(R.id.widget_time_fajr, fajr)
                 setTextViewText(R.id.widget_time_sunrise, sunrise)
                 setTextViewText(R.id.widget_time_dhuhr, dhuhr)
@@ -106,8 +113,8 @@ class SukunWidgetProvider : AppWidgetProvider() {
                     val (boxId, labelId, timeId) = ids
                     if (key == normalizedPrayer) {
                         setInt(boxId, "setBackgroundResource", R.drawable.sukun_widget_active_box)
-                        setTextColor(labelId, 0xFF1FA87C.toInt())
-                        setTextColor(timeId, 0xFF1FA87C.toInt())
+                        setTextColor(labelId, 0xFF35B888.toInt())
+                        setTextColor(timeId, 0xFFE5C170.toInt())
                     } else {
                         setInt(boxId, "setBackgroundResource", R.drawable.sukun_widget_transparent_box)
                         setTextColor(labelId, 0xFF9EAEAA.toInt())
