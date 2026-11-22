@@ -14,6 +14,7 @@
   - **Kilit Ekranı & Bildirim Çubuğu**: Android 13+ POST_NOTIFICATIONS izni, IMPORTANCE_DEFAULT, VISIBILITY_PUBLIC, FOREGROUND_SERVICE_IMMEDIATE.
 - [x] **%100 Çevrimdışı Donanımsal GPS & Şehir Tespiti**: Cihaz GPS donanımı + 81 il Haversine trigonometrisi ile internet harcamadan anında konum ve vakit güncelleme.
 - [x] **Masaüstü Widget Çözümü**: RemoteViews uyumsuz View etiketleri düzeltildi, zikirmatik ve namaz widgetları telefona kuruldu.
+- [x] **Anasayfa Hero Kartı Masaüstü Widget'ına Dönüştürüldü**: Uygulama anasayfasındaki ModernDashboardHero (Konum, Hicri Tarih, Vakte Kalan Sayaç, Vakit Saati rozeti ve 6 Vakit şeridi) birebir Android masaüstü widget'ına taşındı.
 
 ## Kalite & Test Durumu
 - `flutter analyze`: 0 hata, 0 uyarı.
