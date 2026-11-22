@@ -10,11 +10,12 @@
   - **Üst Düzey Masaüstü Widget Tasarımı**: 315° derin zümrüt degrade (`#1F2824 -> #0E1311`), 24dp kavis, altın Selçuklu amblemi (`✦`), aktif vakit zümrüt hap konteyner ve 26sp tabular sayaç.
   - **Ezber & Tekrar Sayacı**: 604 sayfalık Mushaf üzerinde yüzen HUD sayaç, Leyl-Nâs ve 30. Cüz ezber takibi.
   - **Kuran Sesli Okutma & Hızlı Erişim**: Ana Kur'an ekranında sesli tilavet, canlı mini player ve Türk kâriler.
+  - **İnteraktif Zikirmatik & Vakit Widgetları**: Dokunmatik sayaç, sıfırlama butonu, dinamik aktif vakit vurgusu, çift taraflı senkronizasyon ve önizlemeler.
   - **Kilit Ekranı & Bildirim Çubuğu**: Android 13+ POST_NOTIFICATIONS izni, IMPORTANCE_DEFAULT, VISIBILITY_PUBLIC, FOREGROUND_SERVICE_IMMEDIATE.
 
 ## Kalite & Test Durumu
 - `flutter analyze`: 0 hata, 0 uyarı (temiz).
 - `flutter test`: 3/3 birim testi başarılı.
-- `flutter build apk --debug`: `app-debug.apk` derlendi.
+- `flutter build apk --release`: `app-release.apk` (64.5 MB) derlendi.
 - %100 Offline-First prensibine tam uyum sağlandı.
 
