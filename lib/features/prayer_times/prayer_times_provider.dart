@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../core/notifications/lock_screen_prayer_notification_service.dart';
+import 'offline_geolookup_service.dart';
 import 'prayer_calculator_service.dart';
 import 'prayer_times_model.dart';
 
@@ -62,17 +63,29 @@ class UserLocationNotifier extends StateNotifier<CurrentLocationCoordinates> {
       }
       if (permission == LocationPermission.deniedForever) return;
 
+      // 1. Önce cihazın önbelleğindeki son bilinen konumu al (0 saniye, sıfır veri)
+      final lastPos = await Geolocator.getLastKnownPosition();
+      if (lastPos != null) {
+        final cityName = OfflineGeoLookupService.findNearestCity(lastPos.latitude, lastPos.longitude);
+        state = state.copyWith(
+          latitude: lastPos.latitude,
+          longitude: lastPos.longitude,
+          locationName: cityName,
+          isGpsDetected: true,
+        );
+      }
+
+      // 2. Ardından donanımsal GPS sensöründen anlık kesin koordinatı al
       final pos = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.medium,
-        timeLimit: const Duration(seconds: 10),
+        timeLimit: const Duration(seconds: 8),
       );
 
-      // Konum adını enleme/boylama göre biçimlendir
-      final locName = 'GPS Konumu (${pos.latitude.toStringAsFixed(2)}, ${pos.longitude.toStringAsFixed(2)})';
+      final cityName = OfflineGeoLookupService.findNearestCity(pos.latitude, pos.longitude);
       state = state.copyWith(
         latitude: pos.latitude,
         longitude: pos.longitude,
-        locationName: locName,
+        locationName: cityName,
         isGpsDetected: true,
       );
     } catch (_) {}
