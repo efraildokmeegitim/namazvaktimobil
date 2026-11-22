@@ -132,11 +132,60 @@ class SukunWidgetProvider : AppWidgetProvider() {
                 setOnClickPendingIntent(R.id.widget_medium_root, pendingIntent)
             }
 
+            // Rich 4x3 / 4x4 Widget
+            val richViews = RemoteViews(context.packageName, R.layout.sukun_widget_rich_layout).apply {
+                setTextViewText(R.id.widget_rich_location, location)
+                setTextViewText(R.id.widget_rich_hijri_date, hijriDate)
+                setTextViewText(R.id.widget_rich_hero_label, "${nextPrayer.uppercase()} VAKTİNE KALAN")
+                setTextViewText(R.id.widget_rich_hero_timer, remaining)
+                setTextViewText(R.id.widget_rich_next_prayer_time, nextTime)
+
+                setTextViewText(R.id.widget_rich_time_fajr, fajr)
+                setTextViewText(R.id.widget_rich_time_sunrise, sunrise)
+                setTextViewText(R.id.widget_rich_time_dhuhr, dhuhr)
+                setTextViewText(R.id.widget_rich_time_asr, asr)
+                setTextViewText(R.id.widget_rich_time_maghrib, maghrib)
+                setTextViewText(R.id.widget_rich_time_isha, isha)
+
+                val prayerBoxes = mapOf(
+                    "İMSAK" to Triple(R.id.widget_rich_box_fajr, R.id.widget_rich_label_fajr, R.id.widget_rich_time_fajr),
+                    "SABAH" to Triple(R.id.widget_rich_box_fajr, R.id.widget_rich_label_fajr, R.id.widget_rich_time_fajr),
+                    "GÜNEŞ" to Triple(R.id.widget_rich_box_sunrise, R.id.widget_rich_label_sunrise, R.id.widget_rich_time_sunrise),
+                    "ÖĞLE" to Triple(R.id.widget_rich_box_dhuhr, R.id.widget_rich_label_dhuhr, R.id.widget_rich_time_dhuhr),
+                    "İKİNDİ" to Triple(R.id.widget_rich_box_asr, R.id.widget_rich_label_asr, R.id.widget_rich_time_asr),
+                    "AKŞAM" to Triple(R.id.widget_rich_box_maghrib, R.id.widget_rich_label_maghrib, R.id.widget_rich_time_maghrib),
+                    "YATSI" to Triple(R.id.widget_rich_box_isha, R.id.widget_rich_label_isha, R.id.widget_rich_time_isha)
+                )
+
+                val normalizedPrayer = nextPrayer.uppercase()
+                for ((key, ids) in prayerBoxes) {
+                    val (boxId, labelId, timeId) = ids
+                    if (key == normalizedPrayer) {
+                        setInt(boxId, "setBackgroundResource", R.drawable.sukun_widget_active_box)
+                        setTextColor(labelId, 0xFF35B888.toInt())
+                        setTextColor(timeId, 0xFFE5C170.toInt())
+                    } else {
+                        setInt(boxId, "setBackgroundResource", R.drawable.sukun_widget_transparent_box)
+                        setTextColor(labelId, 0xFF9EAEAA.toInt())
+                        setTextColor(timeId, 0xFFFFFFFF.toInt())
+                    }
+                }
+
+                val intent = Intent(context, MainActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                }
+                val pendingIntent = PendingIntent.getActivity(
+                    context, 2, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+                setOnClickPendingIntent(R.id.widget_rich_root, pendingIntent)
+            }
+
             val appWidgetInfo = appWidgetManager.getAppWidgetInfo(appWidgetId)
-            if (appWidgetInfo != null && appWidgetInfo.initialLayout == R.layout.sukun_widget_medium_layout) {
-                appWidgetManager.updateAppWidget(appWidgetId, mediumViews)
-            } else {
-                appWidgetManager.updateAppWidget(appWidgetId, smallViews)
+            when (appWidgetInfo?.initialLayout) {
+                R.layout.sukun_widget_rich_layout -> appWidgetManager.updateAppWidget(appWidgetId, richViews)
+                R.layout.sukun_widget_medium_layout -> appWidgetManager.updateAppWidget(appWidgetId, mediumViews)
+                else -> appWidgetManager.updateAppWidget(appWidgetId, smallViews)
             }
         }
 
@@ -148,6 +197,10 @@ class SukunWidgetProvider : AppWidgetProvider() {
             updateAppWidget(context, appWidgetManager, appWidgetId)
         }
 
+        fun updateRichWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+            updateAppWidget(context, appWidgetManager, appWidgetId)
+        }
+
         fun updateAllWidgets(context: Context) {
             val appWidgetManager = AppWidgetManager.getInstance(context)
             val smallIds = appWidgetManager.getAppWidgetIds(ComponentName(context, SukunWidgetSmallProvider::class.java))
@@ -156,6 +209,10 @@ class SukunWidgetProvider : AppWidgetProvider() {
             }
             val mediumIds = appWidgetManager.getAppWidgetIds(ComponentName(context, SukunWidgetMediumProvider::class.java))
             for (id in mediumIds) {
+                updateAppWidget(context, appWidgetManager, id)
+            }
+            val richIds = appWidgetManager.getAppWidgetIds(ComponentName(context, SukunWidgetRichProvider::class.java))
+            for (id in richIds) {
                 updateAppWidget(context, appWidgetManager, id)
             }
             SukunWidgetTasbihProvider.updateAllTasbihWidgets(context)
@@ -172,6 +229,14 @@ class SukunWidgetSmallProvider : AppWidgetProvider() {
 }
 
 class SukunWidgetMediumProvider : AppWidgetProvider() {
+    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+        for (id in appWidgetIds) {
+            SukunWidgetProvider.updateAppWidget(context, appWidgetManager, id)
+        }
+    }
+}
+
+class SukunWidgetRichProvider : AppWidgetProvider() {
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         for (id in appWidgetIds) {
             SukunWidgetProvider.updateAppWidget(context, appWidgetManager, id)

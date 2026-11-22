@@ -7,5 +7,7 @@
     <string name="widget_medium_desc">Günün 6 namaz vaktini, aktif vakit vurgusuyla ana ekranınızda listeler.</string>
     <string name="widget_tasbih_name">SÜKÛN Zikirmatik (2x2 / Boyutlandırılabilir)</string>
     <string name="widget_tasbih_desc">Dokundukça artan, sıfırlama butonlu ve boyutlandırılabilir ana ekran zikirmatiği.</string>
+    <string name="widget_rich_name">SÜKÛN Zengin İslamî Kart (4x3 / 4x4)</string>
+    <string name="widget_rich_desc">Günün Ayeti, Hikmeti, Namaz Vakitleri, Kerahat Uyarısı ve Hızlı İbadet Kısayolları.</string>
 </resources>
 

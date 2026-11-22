@@ -73,6 +73,19 @@
                 android:resource="@xml/sukun_widget_tasbih_info" />
         </receiver>
 
+        <!-- SÜKÛN Zengin İslamî Kart Widget (4x3 / 4x4) -->
+        <receiver
+            android:name=".SukunWidgetRichProvider"
+            android:exported="true"
+            android:label="@string/widget_rich_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/sukun_widget_rich_info" />
+        </receiver>
+
 
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
