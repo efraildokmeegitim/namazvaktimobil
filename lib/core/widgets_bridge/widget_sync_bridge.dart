@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../features/prayer_times/prayer_times_model.dart';
 
 class WidgetSyncBridge {
-  static const MethodChannel _channel = MethodChannel('com.sukun.app/widget_bridge');
+  static const MethodChannel channel = MethodChannel('com.sukun.app/widget_bridge');
 
   /// Native iOS WidgetKit ve Android Glance için verileri SharedPreferences / AppGroup ile senkronize eder
   static Future<void> syncPrayerData(PrayerDayTimes times) async {
@@ -29,7 +29,7 @@ class WidgetSyncBridge {
       await prefs.setString('sukun_widget_data', jsonEncode(widgetData));
 
       // Native platformu tetikle (iOS WidgetCenter / Android AppWidgetManager)
-      await _channel.invokeMethod('reloadAllTimelines');
+      await channel.invokeMethod('reloadAllTimelines');
     } catch (_) {
       // Native taraf hazır olmadığında sessizce devam eder
     }

@@ -84,6 +84,7 @@
             android:paddingTop="4dp"
             android:paddingBottom="4dp">
             <TextView
+                android:id="@+id/widget_label_fajr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="İmsak"
@@ -111,6 +112,7 @@
             android:paddingTop="4dp"
             android:paddingBottom="4dp">
             <TextView
+                android:id="@+id/widget_label_sunrise"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Güneş"
@@ -138,6 +140,7 @@
             android:paddingTop="4dp"
             android:paddingBottom="4dp">
             <TextView
+                android:id="@+id/widget_label_dhuhr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Öğle"
@@ -165,19 +168,19 @@
             android:paddingTop="4dp"
             android:paddingBottom="4dp">
             <TextView
+                android:id="@+id/widget_label_asr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="İkindi"
-                android:textColor="#1FA87C"
-                android:textSize="11sp"
-                android:textStyle="bold" />
+                android:textColor="#9EAEAA"
+                android:textSize="11sp" />
             <TextView
                 android:id="@+id/widget_time_asr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:text="15:42"
-                android:textColor="#1FA87C"
+                android:textColor="#FFFFFF"
                 android:textSize="13sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -193,6 +196,7 @@
             android:paddingTop="4dp"
             android:paddingBottom="4dp">
             <TextView
+                android:id="@+id/widget_label_maghrib"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Akşam"
@@ -220,6 +224,7 @@
             android:paddingTop="4dp"
             android:paddingBottom="4dp">
             <TextView
+                android:id="@+id/widget_label_isha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Yatsı"

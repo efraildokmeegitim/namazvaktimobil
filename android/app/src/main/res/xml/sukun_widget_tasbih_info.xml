@@ -7,7 +7,8 @@
     android:updatePeriodMillis="0"
     android:initialLayout="@layout/sukun_widget_tasbih_layout"
     android:description="@string/widget_tasbih_desc"
-    android:previewImage="@drawable/preview_widget_small"
+    android:previewImage="@drawable/preview_widget_tasbih"
     android:previewLayout="@layout/sukun_widget_tasbih_layout"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen|keyguard" />
+

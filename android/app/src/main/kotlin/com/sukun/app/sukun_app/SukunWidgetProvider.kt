@@ -69,7 +69,9 @@ class SukunWidgetProvider : AppWidgetProvider() {
                 setTextViewText(R.id.widget_small_timer, remaining)
                 setTextViewText(R.id.widget_small_prayer_time, "Vakit: $nextTime")
 
-                val intent = Intent(context, MainActivity::class.java)
+                val intent = Intent(context, MainActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                }
                 val pendingIntent = PendingIntent.getActivity(
                     context, 0, intent,
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
@@ -88,7 +90,34 @@ class SukunWidgetProvider : AppWidgetProvider() {
                 setTextViewText(R.id.widget_time_maghrib, maghrib)
                 setTextViewText(R.id.widget_time_isha, isha)
 
-                val intent = Intent(context, MainActivity::class.java)
+                // Dinamik Aktif Vakit Vurgulaması
+                val prayerBoxes = mapOf(
+                    "İMSAK" to Triple(R.id.widget_box_fajr, R.id.widget_label_fajr, R.id.widget_time_fajr),
+                    "SABAH" to Triple(R.id.widget_box_fajr, R.id.widget_label_fajr, R.id.widget_time_fajr),
+                    "GÜNEŞ" to Triple(R.id.widget_box_sunrise, R.id.widget_label_sunrise, R.id.widget_time_sunrise),
+                    "ÖĞLE" to Triple(R.id.widget_box_dhuhr, R.id.widget_label_dhuhr, R.id.widget_time_dhuhr),
+                    "İKİNDİ" to Triple(R.id.widget_box_asr, R.id.widget_label_asr, R.id.widget_time_asr),
+                    "AKŞAM" to Triple(R.id.widget_box_maghrib, R.id.widget_label_maghrib, R.id.widget_time_maghrib),
+                    "YATSI" to Triple(R.id.widget_box_isha, R.id.widget_label_isha, R.id.widget_time_isha)
+                )
+
+                val normalizedPrayer = nextPrayer.uppercase()
+                for ((key, ids) in prayerBoxes) {
+                    val (boxId, labelId, timeId) = ids
+                    if (key == normalizedPrayer) {
+                        setInt(boxId, "setBackgroundResource", R.drawable.sukun_widget_active_box)
+                        setTextColor(labelId, 0xFF1FA87C.toInt())
+                        setTextColor(timeId, 0xFF1FA87C.toInt())
+                    } else {
+                        setInt(boxId, "setBackgroundResource", R.drawable.sukun_widget_transparent_box)
+                        setTextColor(labelId, 0xFF9EAEAA.toInt())
+                        setTextColor(timeId, 0xFFFFFFFF.toInt())
+                    }
+                }
+
+                val intent = Intent(context, MainActivity::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                }
                 val pendingIntent = PendingIntent.getActivity(
                     context, 1, intent,
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
@@ -104,6 +133,14 @@ class SukunWidgetProvider : AppWidgetProvider() {
             }
         }
 
+        fun updateSmallWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+            updateAppWidget(context, appWidgetManager, appWidgetId)
+        }
+
+        fun updateMediumWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+            updateAppWidget(context, appWidgetManager, appWidgetId)
+        }
+
         fun updateAllWidgets(context: Context) {
             val appWidgetManager = AppWidgetManager.getInstance(context)
             val smallIds = appWidgetManager.getAppWidgetIds(ComponentName(context, SukunWidgetSmallProvider::class.java))
@@ -114,6 +151,7 @@ class SukunWidgetProvider : AppWidgetProvider() {
             for (id in mediumIds) {
                 updateAppWidget(context, appWidgetManager, id)
             }
+            SukunWidgetTasbihProvider.updateAllTasbihWidgets(context)
         }
     }
 }

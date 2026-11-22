@@ -1,6 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/database/app_database.dart';
+import '../../core/widgets_bridge/widget_sync_bridge.dart';
 import '../../main.dart';
+
 
 class TasbihState {
   final String title;
@@ -91,10 +94,12 @@ class TasbihNotifier extends StateNotifier<TasbihState> {
     } else {
       state = state.copyWith(count: nextCount);
     }
+    _syncWidgetTasbih();
   }
 
   void setTargetCount(int target) {
     state = state.copyWith(targetCount: target, count: 0, round: 1);
+    _syncWidgetTasbih();
   }
 
   void setZikr({required String title, String? arabicText, int targetCount = 33}) {
@@ -105,14 +110,25 @@ class TasbihNotifier extends StateNotifier<TasbihState> {
       count: 0,
       round: 1,
     );
+    _syncWidgetTasbih();
   }
 
   void reset() {
     state = state.copyWith(count: 0, round: 1);
+    _syncWidgetTasbih();
   }
 
   void toggleOledMode() {
     state = state.copyWith(isOledMode: !state.isOledMode);
+  }
+
+  Future<void> _syncWidgetTasbih() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt('tasbih_widget_count', state.count);
+      await prefs.setString('tasbih_widget_dhikr_name', state.title);
+      await WidgetSyncBridge.channel.invokeMethod('reloadAllTimelines');
+    } catch (_) {}
   }
 }
 
