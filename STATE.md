@@ -16,10 +16,16 @@
 - [x] **Masaüstü Widget Çözümü**: RemoteViews uyumsuz View etiketleri düzeltildi, zikirmatik ve namaz widgetları telefona kuruldu.
 - [x] **Anasayfa Hero Kartı Masaüstü Widget'ına Dönüştürüldü**: Uygulama anasayfasındaki ModernDashboardHero (Konum, Hicri Tarih, Vakte Kalan Sayaç, Vakit Saati rozeti ve 6 Vakit şeridi) birebir Android masaüstü widget'ına taşındı.
 - [x] **Zengin İslamî Kart Widget'ı (4x3 / 4x4)**: Konum, Hicri Takvim, Vakte Kalan Sayaç, 6 Vakit Tablosu ve Günün Hikmeti/Ayetini birleştiren zengin masaüstü kartı tasarlandı.
+- [x] **Gelişmiş & Esnek Zikirmatik**:
+  - Kullanıcı özel zikir ekleme (Başlık, Arapça metin, anlam ve hedef sayı).
+  - SQLite kalıcı hafıza ve sayaç saklama (`DhikrItems`).
+  - Hedef sayıya ulaşınca güçlü çift vuruşlu donanımsal titreşim uyarısı (`Vibrator Waveform`).
+  - Dokunuş ölçekleme animasyonu ve canlı ilerleme yüzdesi çubuğu.
+  - Toplam çekilen zikir ve devir istatistiği, tek tuşla OLED gece modu.
 
 ## Kalite & Test Durumu
 - `flutter analyze`: 0 hata, 0 uyarı.
 - `flutter test`: 3/3 test geçti.
-- `flutter build apk --release`: Başarılı, USB üzerinden Infinix cihazına kuruldu.
+- `flutter build apk --release`: `app-release.apk` (64.9 MB) derlendi.
 - %100 Offline-First prensibine tam uyum sağlandı.
 
