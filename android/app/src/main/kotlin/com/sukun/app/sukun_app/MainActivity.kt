@@ -24,6 +24,7 @@ class MainActivity : FlutterActivity(), SensorEventListener {
     private val CHANNEL_COMPASS = "com.sukun.app/compass_sensor"
     private val CHANNEL_AUDIO = "com.sukun.app/quran_audio"
     private val CHANNEL_RINGER = "com.sukun.app/ringer_mode"
+    private val CHANNEL_VIBRATION = "com.sukun.app/vibration"
     private val NOTIFICATION_ID = 1001
     private val NOTIFICATION_CHANNEL_ID = "sukun_prayer_lockscreen_channel"
 
@@ -203,6 +204,52 @@ class MainActivity : FlutterActivity(), SensorEventListener {
                         else -> "normal"
                     }
                     result.success(mode)
+                }
+                else -> result.notImplemented()
+            }
+        }
+
+        // Tasbih Haptic & Target Vibration Channel
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL_VIBRATION).setMethodCallHandler { call, result ->
+            val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val vibratorManager = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as android.os.VibratorManager
+                vibratorManager.defaultVibrator
+            } else {
+                @Suppress("DEPRECATION")
+                getSystemService(Context.VIBRATOR_SERVICE) as android.os.Vibrator
+            }
+
+            when (call.method) {
+                "vibrateTargetReached" -> {
+                    try {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            // Belirgin çift titreşim darbesi (hedef tamamlandı uyarısı)
+                            val timings = longArrayOf(0, 180, 100, 260)
+                            val amplitudes = intArrayOf(0, 255, 0, 255)
+                            val effect = android.os.VibrationEffect.createWaveform(timings, amplitudes, -1)
+                            vibrator.vibrate(effect)
+                        } else {
+                            @Suppress("DEPRECATION")
+                            vibrator.vibrate(longArrayOf(0, 180, 100, 260), -1)
+                        }
+                        result.success(true)
+                    } catch (e: Exception) {
+                        result.error("VIBRATION_ERROR", e.localizedMessage, null)
+                    }
+                }
+                "vibrateTick" -> {
+                    try {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            val effect = android.os.VibrationEffect.createOneShot(35, android.os.VibrationEffect.DEFAULT_AMPLITUDE)
+                            vibrator.vibrate(effect)
+                        } else {
+                            @Suppress("DEPRECATION")
+                            vibrator.vibrate(35)
+                        }
+                        result.success(true)
+                    } catch (e: Exception) {
+                        result.error("VIBRATION_ERROR", e.localizedMessage, null)
+                    }
                 }
                 else -> result.notImplemented()
             }
