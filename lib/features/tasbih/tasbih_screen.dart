@@ -222,34 +222,60 @@ class _TasbihScreenState extends ConsumerState<TasbihScreen> with SingleTickerPr
                       ),
                     ],
                     const SizedBox(height: 14),
-                    // Hızlı Hedef Seçici Çipler
+                    // Hızlı Hedef Seçici Çipler & Serbest Sayı Girişi
                     Wrap(
                       spacing: 8,
                       runSpacing: 6,
                       alignment: WrapAlignment.center,
-                      children: [33, 99, 100, 500, 1000, 0].map((t) {
-                        final isSelected = tasbih.targetCount == t;
-                        final label = t == 0 ? 'Serbest' : '$t';
-                        return ChoiceChip(
+                      children: [
+                        ...[33, 99, 100, 500, 1000, 0].map((t) {
+                          final isSelected = tasbih.targetCount == t;
+                          final label = t == 0 ? 'Serbest (∞)' : '$t';
+                          return ChoiceChip(
+                            label: Text(
+                              label,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: isSelected ? Colors.white : Colors.white70,
+                              ),
+                            ),
+                            selected: isSelected,
+                            selectedColor: SukunColors.emeraldPrimary,
+                            backgroundColor: Colors.white10,
+                            side: BorderSide(
+                              color: isSelected ? SukunColors.emeraldPrimary : Colors.transparent,
+                            ),
+                            onSelected: (_) {
+                              notifier.setTargetCount(t);
+                            },
+                          );
+                        }),
+                        ActionChip(
+                          avatar: const Icon(Icons.edit_outlined, size: 14, color: SukunColors.goldAccent),
                           label: Text(
-                            label,
+                            ![33, 99, 100, 500, 1000, 0].contains(tasbih.targetCount)
+                                ? 'Hedef: ${tasbih.targetCount}'
+                                : 'Özel Sayı',
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
-                              color: isSelected ? Colors.white : Colors.white70,
+                              color: ![33, 99, 100, 500, 1000, 0].contains(tasbih.targetCount)
+                                  ? SukunColors.goldAccent
+                                  : Colors.white70,
                             ),
                           ),
-                          selected: isSelected,
-                          selectedColor: SukunColors.emeraldPrimary,
-                          backgroundColor: Colors.white10,
+                          backgroundColor: ![33, 99, 100, 500, 1000, 0].contains(tasbih.targetCount)
+                              ? SukunColors.goldAccent.withValues(alpha: 0.15)
+                              : Colors.white10,
                           side: BorderSide(
-                            color: isSelected ? SukunColors.emeraldPrimary : Colors.transparent,
+                            color: ![33, 99, 100, 500, 1000, 0].contains(tasbih.targetCount)
+                                ? SukunColors.goldAccent
+                                : Colors.transparent,
                           ),
-                          onSelected: (_) {
-                            notifier.setTargetCount(t);
-                          },
-                        );
-                      }).toList(),
+                          onPressed: () => _showCustomTargetDialog(context, tasbih.targetCount, notifier),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -559,29 +585,22 @@ class _TasbihScreenState extends ConsumerState<TasbihScreen> with SingleTickerPr
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Hedef Sayı:', style: TextStyle(color: Colors.white70)),
-                        DropdownButton<int>(
-                          value: target,
-                          dropdownColor: SukunColors.carbonCardSurface,
-                          style: const TextStyle(color: SukunColors.goldAccent, fontWeight: FontWeight.bold),
-                          items: const [
-                            DropdownMenuItem(value: 33, child: Text('33')),
-                            DropdownMenuItem(value: 99, child: Text('99')),
-                            DropdownMenuItem(value: 100, child: Text('100')),
-                            DropdownMenuItem(value: 500, child: Text('500')),
-                            DropdownMenuItem(value: 1000, child: Text('1000')),
-                            DropdownMenuItem(value: 0, child: Text('Serbest (0)')),
-                          ],
-                          onChanged: (val) {
-                            if (val != null) {
-                              setDialogState(() => target = val);
-                            }
-                          },
-                        ),
-                      ],
+                    TextField(
+                      keyboardType: TextInputType.number,
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                      decoration: const InputDecoration(
+                        labelText: 'Hedef Sayı (0 = Serbest Sayım) *',
+                        hintText: 'Örn: 33, 99, 313, 1000, 4444',
+                        labelStyle: TextStyle(color: SukunColors.emeraldPrimary),
+                        suffixText: 'Adet',
+                      ),
+                      controller: TextEditingController(text: '$target'),
+                      onChanged: (val) {
+                        final parsed = int.tryParse(val.trim());
+                        if (parsed != null && parsed >= 0) {
+                          target = parsed;
+                        }
+                      },
                     ),
                   ],
                 ),
@@ -615,6 +634,61 @@ class _TasbihScreenState extends ConsumerState<TasbihScreen> with SingleTickerPr
           },
         );
       },
+    );
+  }
+
+  // İstediği Serbest Hedef Sayıyı Girme Diyaloğu
+  void _showCustomTargetDialog(BuildContext context, int currentTarget, TasbihNotifier notifier) {
+    final controller = TextEditingController(text: currentTarget > 0 ? '$currentTarget' : '33');
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: SukunColors.carbonBackground,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text('Özel Hedef Sayı Belirle', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Hedefe ulaşıldığında telefonunuz titreşecek ve yeni devre geçecektir. Sınırsız çekmek için 0 yazın.',
+              style: TextStyle(color: Colors.white70, fontSize: 13),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: controller,
+              keyboardType: TextInputType.number,
+              autofocus: true,
+              style: const TextStyle(color: SukunColors.goldAccent, fontSize: 24, fontWeight: FontWeight.bold),
+              decoration: const InputDecoration(
+                labelText: 'Hedef Sayı (Örn: 313, 500, 1000, 4444)',
+                labelStyle: TextStyle(color: SukunColors.emeraldPrimary),
+                suffixText: 'Hedef',
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('İptal', style: TextStyle(color: Colors.white54)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: SukunColors.emeraldPrimary,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
+            onPressed: () {
+              final val = int.tryParse(controller.text.trim());
+              if (val != null && val >= 0) {
+                notifier.setTargetCount(val);
+                Navigator.pop(ctx);
+              }
+            },
+            child: const Text('Hedefi Uygula', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
     );
   }
 
