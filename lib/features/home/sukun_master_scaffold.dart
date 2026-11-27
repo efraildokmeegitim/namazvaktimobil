@@ -14,6 +14,7 @@ import '../../core/notifications/lock_screen_prayer_notification_service.dart';
 import 'daily_wisdom_widget_card.dart';
 import 'ramadan_imsakiye_widget_card.dart';
 import 'daily_worship_tracker_widget_card.dart';
+import 'smart_daily_assistant_card.dart';
 
 class SukunMasterScaffold extends ConsumerStatefulWidget {
   const SukunMasterScaffold({super.key});
@@ -181,6 +182,12 @@ class SukunDashboardTab extends ConsumerWidget {
                 // Kerahat uyarısı rozeti
                 if (times.isKerahatTime && times.kerahatMessage != null)
                   KerahatBadge(message: times.kerahatMessage!),
+
+                // Akıllı İbadet Asistanı Kartı (Bağlamsal, Çevrimdışı, Sıfır Maliyetli AI Mantığı)
+                SmartDailyAssistantCard(
+                  prayerTimes: times,
+                  isSafir: isSafir,
+                ),
 
                 // Seferi modu rozeti
                 if (isSafir)

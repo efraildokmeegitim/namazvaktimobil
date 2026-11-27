@@ -436,58 +436,132 @@ class _IslamicToolsHubScreenState extends State<IslamicToolsHubScreen> {
             ),
 
             // 7. Akıllı Cami Sessiz Modu Hızlı Anahtarı
-            SukunSurfaceCard(
-              enableGlass: true,
-              child: Row(
-                children: [
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.08),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.white12),
-                    ),
-                    child: const Icon(Icons.vibration_rounded, color: Colors.white, size: 24),
-                  ),
-                  const SizedBox(width: 14),
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Cami / İbadet Sessiz Modu',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white),
-                        ),
-                        SizedBox(height: 2),
-                        Text(
-                          'Tek tıkla telefonu titreşim / sessiz moda al',
-                          style: TextStyle(fontSize: 12, color: Colors.white54),
-                        ),
-                      ],
-                    ),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: SukunColors.emeraldPrimary,
-                      foregroundColor: Colors.black,
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                    ),
-                    onPressed: () async {
-                      final success = await SmartCamiiSilentService.setSilentMode();
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(success ? 'Telefon sessiz / titreşim moduna alındı.' : 'Zil sesi ayarlandı.'),
-                            backgroundColor: SukunColors.emeraldPrimary,
+            FutureBuilder<bool>(
+              future: SmartCamiiSilentService.isAutoSilentEnabled(),
+              builder: (context, snapshot) {
+                final isAuto = snapshot.data ?? false;
+                return SukunSurfaceCard(
+                  enableGlass: true,
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: 44,
+                            height: 44,
+                            decoration: BoxDecoration(
+                              color: isAuto ? SukunColors.emeraldPrimary.withValues(alpha: 0.15) : Colors.white.withValues(alpha: 0.08),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: isAuto ? SukunColors.emeraldPrimary : Colors.white12),
+                            ),
+                            child: Icon(
+                              isAuto ? Icons.notifications_off_rounded : Icons.vibration_rounded,
+                              color: isAuto ? SukunColors.emeraldPrimary : Colors.white,
+                              size: 24,
+                            ),
                           ),
-                        );
-                      }
-                    },
-                    child: const Text('Sessize Al', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                          const SizedBox(width: 14),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Text(
+                                      'Akıllı Cami Modu',
+                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.white),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: isAuto ? SukunColors.emeraldPrimary.withValues(alpha: 0.2) : Colors.white10,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                        isAuto ? 'OTOMATİK AKTİF' : 'MANUEL',
+                                        style: TextStyle(
+                                          fontSize: 9,
+                                          fontWeight: FontWeight.bold,
+                                          color: isAuto ? SukunColors.emeraldPrimary : Colors.white54,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  isAuto
+                                      ? 'Namaz vaktinde otomatik sessize alır, 30 dk sonra açar'
+                                      : 'Ezan vaktinde otomatik sessize al veya manuel tetikle',
+                                  style: const TextStyle(fontSize: 12, color: Colors.white54),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Switch(
+                            value: isAuto,
+                            activeColor: SukunColors.emeraldPrimary,
+                            onChanged: (val) async {
+                              await SmartCamiiSilentService.setAutoSilentEnabled(val);
+                              if (context.mounted) {
+                                (context as Element).markNeedsBuild();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(val
+                                        ? 'Akıllı Cami Modu açıldı: Ezan vakitlerinde telefon otomatik sessize alınır.'
+                                        : 'Otomatik cami modu kapatıldı.'),
+                                    backgroundColor: SukunColors.emeraldPrimary,
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton.icon(
+                            icon: const Icon(Icons.volume_up_rounded, size: 16, color: Colors.white70),
+                            label: const Text('Normale Al', style: TextStyle(color: Colors.white70, fontSize: 12)),
+                            onPressed: () async {
+                              await SmartCamiiSilentService.setNormalMode();
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Zil sesi normal moda alındı.')),
+                                );
+                              }
+                            },
+                          ),
+                          const SizedBox(width: 8),
+                          ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: SukunColors.emeraldPrimary,
+                              foregroundColor: Colors.black,
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            ),
+                            icon: const Icon(Icons.volume_off_rounded, size: 16),
+                            label: const Text('Şimdi Sessize Al', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                            onPressed: () async {
+                              final success = await SmartCamiiSilentService.setSilentMode();
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(success ? 'Telefon sessiz / titreşim moduna alındı.' : 'Ayarlandı.'),
+                                    backgroundColor: SukunColors.emeraldPrimary,
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                );
+              },
             ),
 
             // 8. 5 Vakit Namaz Tesbihatı ve Aşr-ı Şerifler Rehberi

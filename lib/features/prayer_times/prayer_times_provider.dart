@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../core/notifications/lock_screen_prayer_notification_service.dart';
+import '../tools/smart_camii_silent_service.dart';
 import 'offline_geolookup_service.dart';
 import 'prayer_calculator_service.dart';
 import 'prayer_times_model.dart';
@@ -119,6 +120,8 @@ final activePrayerTimesProvider = StreamProvider<PrayerDayTimes>((ref) {
     );
     // Kilit ekranı bildirimini ve native widget'ları anlık besle
     LockScreenPrayerNotificationService.updateLockScreen(times);
+    // Akıllı Cami Modu kontrolü (ezan vaktinde sessize alma)
+    SmartCamiiSilentService.checkAndApplyAutoSilent(times);
     return times;
   });
 });
