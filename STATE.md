@@ -22,10 +22,16 @@
   - Hedef sayıya ulaşınca güçlü çift vuruşlu donanımsal titreşim uyarısı (`Vibrator Waveform`).
   - Dokunuş ölçekleme animasyonu ve canlı ilerleme yüzdesi çubuğu.
   - Toplam çekilen zikir ve devir istatistiği, tek tuşla OLED gece modu.
+- [x] **%100 Çevrimdışı & Sıfır Maliyetli Akıllı Asistan (SukunSmartEngine)**:
+  - Günün vaktine, haftanın gününe (Cuma/Pazartesi), seher/kuşluk/kerahat saatine ve seferilik durumuna göre bağlamsal akıllı yönlendirme.
+- [x] **Otomatik Akıllı Cami Modu (SmartCamiiSilentService)**:
+  - Ezan vakitlerinde telefonu otomatik titreşime/sessize alır; 30 dk sonra otomatik olarak zil sesini normale döndürür.
+- [x] **Kalıcı & Akıllı Günlük Vird Listesi**:
+  - SharedPreferences kalıcı hafıza, her gece otomatik devir sıfırlama ve özel vird ekleme.
 
 ## Kalite & Test Durumu
-- `flutter analyze`: 0 hata, 0 uyarı.
+- `flutter analyze`: 0 hata, 0 kritik uyarı.
 - `flutter test`: 3/3 test geçti.
-- `flutter build apk --release`: `app-release.apk` (64.9 MB) derlendi.
-- %100 Offline-First prensibine tam uyum sağlandı.
+- `flutter build apk --release`: `app-release.apk` (65.0 MB) derlendi.
+- %100 Offline-First ve sıfır API maliyeti prensibine tam uyum sağlandı.
 
